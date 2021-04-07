@@ -1,0 +1,163 @@
+<mat-toolbar class="module-toolbar" role="heading">
+  <mat-toolbar-row>
+    <span>Punto de venta</span>
+    <span class="filler"></span>
+    <button mat-flat-button color="accent" class="sep-right-5" aria-labelledby="Guardar venta" [disabled]="readyToPay()"
+      (click)="save()">
+      Pagar
+    </button>
+    <button mat-icon-button aria-labelledby="Reimprimir" (click)="reprint()">
+      <mat-icon>print</mat-icon>
+    </button>
+    <button mat-icon-button aria-labelledby="Cancelar venta" (click)="cancelOrder()">
+      <mat-icon>clear</mat-icon>
+    </button>
+  </mat-toolbar-row>
+</mat-toolbar>
+<mat-card class="card-table">
+  <mat-card-content class="card-table-content">
+    <div class="pos">
+      <div class="catalog">
+        <div class="product-types">
+          <div class="product-type" *ngFor="let productType of productTypes">
+            <button mat-stroked-button class="product-type-button" color="primary"
+              (click)="onProductTypeSelect(productType)">
+              {{productType.productType}}
+            </button>
+          </div>
+        </div>
+        <div class="products">
+          <div class="product" *ngFor="let product of products">
+            <button mat-flat-button class="product-button" (click)="onProductSelection(product)"
+              color="primary">{{product.shortDescription}}</button>
+          </div>
+        </div>
+      </div>
+      <div class="order-info">
+        <div class="customer">
+          <div class="label">Cliente:</div>
+          <div class="data name">
+            {{customerName}}
+            <button mat-icon-button color="primary" (click)="findCustomer()">
+              <mat-icon>search</mat-icon>
+            </button>
+          </div>
+        </div>
+        <div class="sale-type">
+          <div class="label">Tipo de venta:</div>
+          <div class="data name">
+            {{saleTypeSelection}}
+            <button mat-icon-button color="primary" [matMenuTriggerFor]="menu">
+              <mat-icon>keyboard_arrow_down</mat-icon>
+            </button>
+          </div>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item *ngFor="let type of saleTypes" (click)="saleTypeSelectionChange(type)">
+              <span>{{type.type}}</span>
+            </button>
+          </mat-menu>
+        </div>
+        <div class="selected-product">
+          <div class="row">
+            <div class="col product-description">
+              <div class="label">Producto:</div>
+              <div class="data">
+                {{longDescription}}
+              </div>
+            </div>
+          </div>
+          <div class="row product-data">
+            <div class="col">
+              <div class="label">Cantidad:</div>
+              <div class="data" (click)="changeQuantity()">
+                {{ quantity | number }}
+              </div>
+            </div>
+            <div class="col">
+              <div class="label">Piezas:</div>
+              <div class="data" (click)="changePieces()">
+                {{ pieces | number }}
+              </div>
+            </div>
+            <div class="col">
+              <div class="label">Precio:</div>
+              <div class="data" [ngClass]="{'error-data': !correctPrice}" (click)="changePrice()">
+                {{price | currency}}
+              </div>
+            </div>
+            <div class="col">
+              <div class="label">Importe:</div>
+              <div class="data">
+                {{amount | currency}}
+              </div>
+            </div>
+            <div class="col button-align-center">
+              <button mat-flat-button color="accent" [disabled]="addProductButtonDisabled"
+                (click)="addProduct()">Agregar</button>
+            </div>
+          </div>
+        </div>
+        <div class="order-items">
+          <table mat-table class="pos-table" [dataSource]="dataSource" aria-label="Elements">
+            <ng-container matColumnDef="shortDescription">
+              <th mat-header-cell *matHeaderCellDef>Descripción</th>
+              <td mat-cell *matCellDef="let row">{{row.product.shortDescription}}</td>
+            </ng-container>
+            <ng-container matColumnDef="price">
+              <th mat-header-cell *matHeaderCellDef>Precio</th>
+              <td mat-cell *matCellDef="let row">{{row.price | currency}}</td>
+            </ng-container>
+            <ng-container matColumnDef="pieces">
+              <th mat-header-cell *matHeaderCellDef>Piezas</th>
+              <td mat-cell *matCellDef="let row">{{row.pieces | number}}</td>
+            </ng-container>
+            <ng-container matColumnDef="quantity">
+              <th mat-header-cell *matHeaderCellDef>Cantidad</th>
+              <td mat-cell *matCellDef="let row">{{row.quantity | number}}</td>
+            </ng-container>
+            <ng-container matColumnDef="amount">
+              <th mat-header-cell *matHeaderCellDef>Importe</th>
+              <td mat-cell *matCellDef="let row">{{row.quantity * row.price | currency}}</td>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let row">
+                <button mat-icon-button (click)="edit(row)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button (click)="delete(row)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+        <div class="order-total">
+          <div class="row">
+            <div class="col">
+              <div class="label">Importe</div>
+              <div class="data">
+                {{ totalAmount | currency }}
+              </div>
+            </div>
+            <div class="col">
+              <div class="label">I.V.A.</div>
+              <div class="data">
+                {{ tax | currency }}
+              </div>
+            </div>
+            <div class="col">
+              <div class="label">Total</div>
+              <div class="data">
+                {{ total | currency }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

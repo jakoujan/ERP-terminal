@@ -1,0 +1,40 @@
+<h2 mat-dialog-title>Selección de cliente</h2>
+<div mat-dialog-content class="dialog-content">
+  <form [formGroup]="customerFinderForm">
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Introduzca la razon social del cliente</mat-label>
+      <mat-icon matPrefix>keyboard</mat-icon>
+      <input matInput type="text" [keyboard]="customerFinderForm.controls.customerFinder"
+        formControlName="customerFinder">
+      <button mat-icon-button matSuffix [disabled]="customerFinderForm.controls.customerFinder.invalid"
+        (click)="search()">
+        <mat-icon>search</mat-icon>
+      </button>
+    </mat-form-field>
+  </form>
+  <div class="table-customers">
+    <table mat-table class="full-width" [dataSource]="dataSource" aria-label="Elements">
+      <ng-container matColumnDef="businessName">
+        <th mat-header-cell *matHeaderCellDef>Razon social</th>
+        <td mat-cell *matCellDef="let row">{{row.businessName}}</td>
+      </ng-container>
+      <ng-container matColumnDef="contact">
+        <th mat-header-cell *matHeaderCellDef>Contacto</th>
+        <td mat-cell *matCellDef="let row">{{row.contact}}</td>
+      </ng-container>
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let row">
+          <button mat-icon-button color="primary" (click)="selectCustomer(row)">
+            <mat-icon>check</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="false">Cerrar</button>
+</div>

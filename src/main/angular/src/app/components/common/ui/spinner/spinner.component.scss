@@ -1,0 +1,22 @@
+mat-spinner {
+  margin: 0 auto;
+}
+
+:host {
+  height: 67%;
+}
+
+.spinner-container {
+  height: 120px;
+  width: 100%;
+}
+
+.text {
+  width: 100%;
+  text-align: center;
+  padding-top: 30px;
+  font-weight: 800;
+  color: #353A41;
+}
+
+

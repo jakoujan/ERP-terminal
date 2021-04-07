@@ -1,0 +1,5 @@
+<router-outlet></router-outlet>
+<div class="keyboard-container" [ngClass]="{'keyboard-showed': shk, 'keyboard-container-number': numeric}">
+  <div class="close-keyboard" (click)="closeKeyboard()">X</div>
+  <div class="simple-keyboard"></div>
+</div>

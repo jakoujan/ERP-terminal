@@ -1,0 +1,38 @@
+<h2 mat-dialog-title>Edición de producto</h2>
+<div mat-dialog-content class="dialog-content">
+  <div class="product-info">
+    <div class="row product-data">
+      <div class="col">
+        <div class="label">Cantidad:</div>
+        <!--div class="data" (click)="changeQuantity()">
+          {{ quantity | number }}
+        </div-->
+        <div class="data">
+          {{ quantity | number }}
+        </div>
+      </div>
+      <div class="col">
+        <div class="label">Piezas:</div>
+        <div class="data" (click)="changePieces()">
+          {{ pieces | number }}
+        </div>
+      </div>
+      <div class="col">
+        <div class="label">Precio:</div>
+        <div class="data" [ngClass]="{'error-data': !correctPrice}" (click)="changePrice()">
+          {{price | currency}}
+        </div>
+      </div>
+      <div class="col">
+        <div class="label">Importe:</div>
+        <div class="data">
+          {{amount | currency}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="false">Cancelar</button>
+  <button mat-flat-button  color="accent" cdkFocusInitial (click)="edit()">Editar</button>
+</div>

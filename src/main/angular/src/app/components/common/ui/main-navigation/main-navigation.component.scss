@@ -1,0 +1,147 @@
+.navigation-container {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  .main-nav {
+    border-bottom: 1px solid #f3f2f2;
+    div.title {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      img.logo-image {
+        width: 90px;
+      }
+      p {
+        margin: 0 0 0 20px;
+        font-weight: 800;
+        font-size: 20px;
+        text-transform: uppercase;
+      }
+    }
+  }
+}
+
+.sidenav-container {
+  height: 100%;
+  flex: 1;
+}
+
+.sidenav {
+  width: 250px;
+  margin-top: 64px;
+  .profile {
+    width: 100%;
+    height: 120px;
+    display: block;
+    background: #353a41 url("/assets/bg_name.png");
+    background-size: cover;
+    position: relative;
+
+    img {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+    }
+
+    .name {
+      position: absolute;
+      bottom: 5px;
+      right: 10px;
+      font-size: 15px;
+      font-weight: 400;
+      color: #ffffff;
+      text-shadow: 1px 1px 3px #000000;
+      width: calc(100% - 10px);
+      text-align: right;
+      font-weight: 900;
+    }
+  }
+
+  .accordion-menu {
+    background: none;
+    padding: 0;
+  }
+}
+
+@media only screen and (max-width: 576px) {
+  .sidenav {
+    margin-top: 56px;
+  }
+}
+
+.sidenav .mat-toolbar {
+  background: inherit;
+}
+
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.toggle-button {
+  margin-right: 15px;
+}
+
+.logo {
+  margin-right: 10px;
+  height: 33px;
+  width: 33px;
+}
+
+.mat-list-base {
+  padding-top: 0 !important;
+}
+
+.main-menu {
+  color: #666666;
+  padding: 10px 0;
+
+  .module {
+    border-bottom: 1px solid #eeeeee;
+    margin-bottom: 10px;
+
+    .module-title {
+      display: flex;
+      flex-direction: row;
+      font-size: 15px;
+      padding: 0 0 10px 10px;
+      font-weight: 700;
+
+      div {
+        padding-top: 3px;
+      }
+    }
+
+    .submodules {
+      display: flex;
+      flex-direction: column;
+
+      a {
+        padding: 10px 0 10px 50px;
+        cursor: pointer;
+        user-select: none;
+        transition: background 0.5s, color 0.5s;
+      }
+
+      a::before {
+        content: '- ';
+        font-weight: 800;
+        color: #eeeeee;
+      }
+
+      a:hover {
+        color: #353A41;
+        background: #eeeeee;
+      }
+    }
+  }
+}

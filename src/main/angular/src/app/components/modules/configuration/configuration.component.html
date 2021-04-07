@@ -1,0 +1,32 @@
+<h2 mat-dialog-title>Configuración de la terminal</h2>
+<div mat-dialog-content class="dialog-content">
+  <mat-accordion>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Configuración del ticket
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <form [formGroup]="form">
+        <div class="row">
+          <div class="col">
+            <mat-form-field class="input-full-width" appearance="fill">
+              <mat-label>Impresora</mat-label>
+              <mat-select matNativeControl formControlName="printer" placeholder="Impresora" required>
+                <mat-option *ngFor="let printer of printers" [value]="printer">{{ printer }}
+                </mat-option>
+              </mat-select>
+              <mat-error>
+                <custom-mat-error [control]="form.controls.printer"></custom-mat-error>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+      </form>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-flat-button color="accent" cdkFocusInitial (click)="save()">Guardar</button>
+  <button mat-button [mat-dialog-close]="false">Cerrar</button>
+</div>
