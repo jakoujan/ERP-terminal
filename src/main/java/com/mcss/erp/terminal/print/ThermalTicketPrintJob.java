@@ -80,14 +80,9 @@ public class ThermalTicketPrintJob implements PrintJob {
             ps.write(imageWrapper, escposImage);
             ps.feed(5);
             ps.writeLF(titleStyle, config.getBussinesName().toUpperCase());
-            ps.writeLF(subtitleStyle, "601 - general de ley de personas morales".toUpperCase());
-            ps.writeLF(subtitleStyle, "ALUMINIO 377");
-            ps.writeLF(subtitleStyle, "20 DE NOVIEMBRE");
-            ps.writeLF(subtitleStyle, "DEL VENUSTIANO CARRANZA");
-            ps.writeLF(subtitleStyle, "CIUDAD DE MEXICO, 15300");
-            ps.writeLF(subtitleStyle, "DCM100826V36");
+            ps.writeLF(subtitleStyle, this.config.getAddress().toUpperCase());
             ps.feed(1);
-            ps.writeLF(subtitleStyle, "TELS.: 5557897887, 5557045743");
+            //ps.writeLF(subtitleStyle, "TELS.: 5557897887, 5557045743");
             ps.writeLF("------------------------------------------------");
             //ps.writeLF(titleStyle, "Orden de venta");
             ps.feed(1);
