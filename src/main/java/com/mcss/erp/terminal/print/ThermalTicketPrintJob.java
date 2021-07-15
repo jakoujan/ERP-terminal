@@ -51,7 +51,7 @@ public class ThermalTicketPrintJob implements PrintJob {
     @Override
     public void print(SaleOrder order) throws FileNotFoundException, IOException {
         LOGGER.info("Impresión iniciada");
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        //SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         SimpleDateFormat hourformatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         NumberFormat currencyFormat = new DecimalFormat("#,###.00");
 
