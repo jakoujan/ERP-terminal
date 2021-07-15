@@ -5,6 +5,7 @@
  */
 package com.mcss.erp.terminal.data.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 
 public class Customer implements Serializable {
@@ -13,7 +14,14 @@ public class Customer implements Serializable {
     private Integer id;
     private String uuid;
     private String businessName;
-    
+    private String externalNumber;
+    private String street;
+    private String internalNumber;
+    private String settlement;
+    private String county;
+    private String city;
+    private String postalCode;
+    private State state;
 
     public Customer() {
     }
@@ -66,5 +74,19 @@ public class Customer implements Serializable {
     public String toString() {
         return "com.mcss.erp.data.entity.Customer[ id=" + id + " ]";
     }
-    
+
+    @JsonIgnore
+    public String getAddress() {
+        StringBuilder sb = new StringBuilder(this.street);
+        sb.append(" ").append(this.externalNumber)
+                .append(" ").append(this.internalNumber)
+                .append("##").append(this.settlement)
+                .append(", ").append(this.county)
+                .append("##").append(this.city)
+                .append(",").append(this.postalCode)
+                .append("##").append(this.state);
+        return sb.toString();
+
+    }
+
 }

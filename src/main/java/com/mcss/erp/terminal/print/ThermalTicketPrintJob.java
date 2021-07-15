@@ -28,6 +28,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Iterator;
 import javax.imageio.ImageIO;
 import javax.print.PrintService;
@@ -79,10 +80,22 @@ public class ThermalTicketPrintJob implements PrintJob {
             ps.feed(1);
             ps.write(imageWrapper, escposImage);
             ps.feed(5);
-            ps.writeLF(titleStyle, config.getBussinesName().toUpperCase());
-            ps.writeLF(subtitleStyle, this.config.getAddress().toUpperCase());
+            Arrays.asList(config.getBussinesName().split("##")).forEach(line -> {
+                try {
+                    ps.writeLF(titleStyle, line.toUpperCase());
+                } catch (IOException ex) {
+
+                }
+            });
+            Arrays.asList(config.getAddress().split("##")).forEach(line -> {
+                try {
+                    ps.writeLF(subtitleStyle, line.toUpperCase());
+                } catch (IOException ex) {
+
+                }
+            });
             ps.feed(1);
-            //ps.writeLF(subtitleStyle, "TELS.: 5557897887, 5557045743");
+            ps.writeLF(subtitleStyle, config.getSlogan());
             ps.writeLF("------------------------------------------------");
             //ps.writeLF(titleStyle, "Orden de venta");
             ps.feed(1);
@@ -96,6 +109,14 @@ public class ThermalTicketPrintJob implements PrintJob {
             ps.writeLF(order.getUser().getName());
             ps.write(labelStyle, "Cliente:  ");
             ps.writeLF(order.getCustomer().getBusinessName());
+            ps.write(labelStyle, "Dirección:  ");
+            Arrays.asList(order.getCustomer().getAddress().split("##")).forEach(line -> {
+                try {
+                    ps.writeLF(line.toUpperCase());
+                } catch (IOException ex) {
+
+                }
+            });
             ps.feed(1);
             ps.writeLF("CONCEPTO");
             ps.writeLF("CANTIDAD   PIEZAS     IMPORTE      TOTAL");
@@ -124,7 +145,16 @@ public class ThermalTicketPrintJob implements PrintJob {
             ps.feed(1);
             String convertNumberToLetter = NumberToLetterHelper.convertNumberToLetter(order.getTotal().setScale(2, RoundingMode.HALF_UP).toString());
             ps.writeLF("(" + convertNumberToLetter + ")");
-            //ps.writeLF(subtitleStyle, "ESTE NO ES UN COMPROBANTE DE PAGO");
+            ps.feed(3);
+            Arrays.asList(config.getFooter().split("##")).forEach(line -> {
+                try {
+                    ps.writeLF(subtitleStyle, line.toUpperCase());
+                } catch (IOException ex) {
+
+                }
+            });
+            ps.feed(2);
+            ps.writeLF(subtitleStyle, "ESTE NO ES UN COMPROBANTE DE PAGO");
             ps.feed(2);
 
             BarCode barcode = new BarCode()

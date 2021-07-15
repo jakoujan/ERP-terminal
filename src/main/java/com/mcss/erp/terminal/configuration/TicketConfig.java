@@ -17,17 +17,23 @@ public class TicketConfig {
     private String logoPath;
     @Value("${ticket.bussinesname}")
     private String bussinesName;
+    @Value("${ticket.slogan}")
+    private String slogan;
     @Value("${ticket.address}")
     private String address;
-    
+    @Value("${ticket.footer}")
+    private String footer;
+
     public TicketConfig() {
     }
 
-    public TicketConfig(String printer, String logoPath, String bussinesName, String address) {
+    public TicketConfig(String printer, String logoPath, String bussinesName, String address, String slogan, String footer) {
         this.printer = printer;
         this.logoPath = logoPath;
         this.bussinesName = bussinesName;
         this.address = address;
+        this.slogan = slogan;
+        this.footer = footer;
     }
 
     public String getPrinter() {
@@ -60,5 +66,21 @@ public class TicketConfig {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getSlogan() {
+        return slogan;
+    }
+
+    public void setSlogan(String slogan) {
+        this.slogan = slogan;
+    }
+
+    public String getFooter() {
+        return footer;
+    }
+
+    public void setFooter(String footer) {
+        this.footer = footer;
     }
 }
