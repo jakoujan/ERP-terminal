@@ -56,7 +56,7 @@ public class ThermalTicketPrintJob implements PrintJob {
         NumberFormat currencyFormat = new DecimalFormat("#,###.00");
 
         Style titleStyle = new Style()
-                .setFontSize(Style.FontSize._2, Style.FontSize._2)
+                .setFontSize(Style.FontSize._2, Style.FontSize._1)
                 .setJustification(EscPosConst.Justification.Center);
 
         Style subtitleStyle = new Style()
@@ -79,7 +79,7 @@ public class ThermalTicketPrintJob implements PrintJob {
             EscPosImage escposImage = new EscPosImage(new CoffeeImageImpl(image), algorithm);
             ps.feed(1);
             ps.write(imageWrapper, escposImage);
-            ps.feed(5);
+            ps.feed(1);
             Arrays.asList(config.getBussinesName().split("##")).forEach(line -> {
                 try {
                     ps.writeLF(titleStyle, line.toUpperCase());
@@ -87,6 +87,10 @@ public class ThermalTicketPrintJob implements PrintJob {
 
                 }
             });
+            ps.feed(1);
+            ps.writeLF(subtitleStyle, config.getTaxid().toUpperCase());
+            ps.writeLF(subtitleStyle, "REGIMEN DE INCORPORACION FISCAL");
+            ps.feed(1);
             Arrays.asList(config.getAddress().split("##")).forEach(line -> {
                 try {
                     ps.writeLF(subtitleStyle, line.toUpperCase());
@@ -94,8 +98,12 @@ public class ThermalTicketPrintJob implements PrintJob {
 
                 }
             });
+            ps.write(subtitleStyle, "Telefono(s): ");
+            ps.writeLF(subtitleStyle, config.getPhone());
+            ps.write(subtitleStyle, "Whatsapp: ");
+            ps.writeLF(subtitleStyle, config.getWhatsapp());
             ps.feed(1);
-            ps.writeLF(subtitleStyle, config.getSlogan());
+            ps.writeLF(subtitleStyle, config.getSlogan().toUpperCase());
             ps.writeLF("------------------------------------------------");
             //ps.writeLF(titleStyle, "Orden de venta");
             ps.feed(1);
@@ -109,7 +117,7 @@ public class ThermalTicketPrintJob implements PrintJob {
             ps.writeLF(order.getUser().getName());
             ps.write(labelStyle, "Cliente:  ");
             ps.writeLF(order.getCustomer().getBusinessName());
-            ps.write(labelStyle, "Dirección:  ");
+            ps.writeLF(labelStyle, "Dirección:  ");
             Arrays.asList(order.getCustomer().getAddress().split("##")).forEach(line -> {
                 try {
                     ps.writeLF(line.toUpperCase());
@@ -134,17 +142,31 @@ public class ThermalTicketPrintJob implements PrintJob {
                 ps.writeLF(fixedLengthString("$" + currencyFormat.format(p.getAmount().setScale(2, RoundingMode.HALF_UP)), 12));
                 ps.writeLF("················································");
             }
+
             if (order.getProducts().size() > 1) {
                 ps.feed(1);
                 ps.write("KILOS: ");
                 ps.write(kilos.setScale(2, RoundingMode.HALF_UP).toString());
             }
+
             ps.feed(1);
             ps.write(labelStyle, "FAVOR DE PAGAR EN CAJA     TOTAL: ");
             ps.writeLF(labelStyle, "$" + currencyFormat.format(order.getTotal().setScale(0, RoundingMode.HALF_UP)));
             ps.feed(1);
             String convertNumberToLetter = NumberToLetterHelper.convertNumberToLetter(order.getTotal().setScale(2, RoundingMode.HALF_UP).toString());
             ps.writeLF("(" + convertNumberToLetter + ")");
+            ps.feed(1);
+            BigDecimal q = order.getTotal().setScale(0, RoundingMode.HALF_UP);
+            if (q.compareTo(BigDecimal.ZERO) >= 1) {
+                String qs = NumberToLetterHelper.convertNumberToLetter(q.toString());
+                ps.feed(1);
+                ps.write("POR ESTE PAGARE PROMETO(EMOS) INCONDICIONALMENTE PAGAR EN " + this.config.getAddress().replace("##", "").toUpperCase() + "  A LA ORDEN DE " + this.config.getBussinesName().replace("##", "").toUpperCase() + ",");
+                ps.write("LA CANTIDAD DE $ " + currencyFormat.format(q.setScale(0, RoundingMode.HALF_UP)) + "(" + qs + "), LA SUMA ANTES MENCIONADA SE CUBRIRA EL DIA " + saleDate + ", LA FALTA PUNTUAL DE PAGO QUE AMPARA ESTE DOCUMENTO, ");
+                ps.writeLF("CAUSARA INTERESES MORATORIOS A RAZON DEL 8% MENSUAL PAGADERO JUNTAMENTE CON EL PRINCIPAL QUE SE CONMUTARA SOBRE SALDOS INSOLUTOS");
+                ps.feed(3);
+                ps.writeLF(subtitleStyle, "__________________________________");
+                ps.writeLF(subtitleStyle, "NOMBRE Y FIRMA DE ACEPTACION");
+            }
             ps.feed(3);
             Arrays.asList(config.getFooter().split("##")).forEach(line -> {
                 try {
@@ -154,8 +176,8 @@ public class ThermalTicketPrintJob implements PrintJob {
                 }
             });
             ps.feed(2);
-            ps.writeLF(subtitleStyle, "ESTE NO ES UN COMPROBANTE DE PAGO");
-            ps.feed(2);
+            //ps.writeLF(subtitleStyle, "ESTE NO ES UN COMPROBANTE DE PAGO");
+            //ps.feed(2);
 
             BarCode barcode = new BarCode()
                     .setBarCodeSize(4, 120)

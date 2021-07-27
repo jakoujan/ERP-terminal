@@ -54,6 +54,9 @@ public class ConfigurationModelImpl implements ConfigurationModel {
             prop.setProperty("ticket.bussinesname", this.ticketConfig.getBussinesName());
             prop.setProperty("ticket.printer", this.ticketConfig.getPrinter());
             prop.setProperty("ticket.address", this.ticketConfig.getAddress());
+            prop.setProperty("ticket.taxid", this.ticketConfig.getTaxid());
+            prop.setProperty("ticket.slogan", this.ticketConfig.getSlogan());
+            prop.setProperty("ticket.footer", this.ticketConfig.getFooter());
 
             prop.setProperty("port.name", this.connectorHandler.getName());
             prop.setProperty("port.baudrate", String.valueOf(this.connectorHandler.getBaudrate()));

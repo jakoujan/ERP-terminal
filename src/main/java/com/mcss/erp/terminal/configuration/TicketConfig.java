@@ -23,6 +23,12 @@ public class TicketConfig {
     private String address;
     @Value("${ticket.footer}")
     private String footer;
+    @Value("${ticket.taxid}")
+    private String taxid;
+    @Value("${ticket.phone}")
+    private String phone;
+    @Value("${ticket.whatsapp}")
+    private String whatsapp;
 
     public TicketConfig() {
     }
@@ -83,4 +89,29 @@ public class TicketConfig {
     public void setFooter(String footer) {
         this.footer = footer;
     }
+
+    public String getTaxid() {
+        return taxid;
+    }
+
+    public void setTaxid(String taxid) {
+        this.taxid = taxid;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getWhatsapp() {
+        return whatsapp;
+    }
+
+    public void setWhatsapp(String whatsapp) {
+        this.whatsapp = whatsapp;
+    }
+
 }

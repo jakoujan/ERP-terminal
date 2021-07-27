@@ -9,7 +9,7 @@ package com.mcss.erp.terminal.data.entity;
  *
  * @author edgar
  */
-class State {
+public class State {
 
     private int id;
     private String name;

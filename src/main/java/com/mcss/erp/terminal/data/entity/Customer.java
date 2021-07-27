@@ -50,6 +50,70 @@ public class Customer implements Serializable {
         this.businessName = businessName;
     }
 
+    public String getExternalNumber() {
+        return externalNumber;
+    }
+
+    public void setExternalNumber(String externalNumber) {
+        this.externalNumber = externalNumber;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public String getInternalNumber() {
+        return internalNumber;
+    }
+
+    public void setInternalNumber(String internalNumber) {
+        this.internalNumber = internalNumber;
+    }
+
+    public String getSettlement() {
+        return settlement;
+    }
+
+    public void setSettlement(String settlement) {
+        this.settlement = settlement;
+    }
+
+    public String getCounty() {
+        return county;
+    }
+
+    public void setCounty(String county) {
+        this.county = county;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -78,7 +142,7 @@ public class Customer implements Serializable {
     @JsonIgnore
     public String getAddress() {
         StringBuilder sb = new StringBuilder(this.street);
-        sb.append(" ").append(this.externalNumber)
+        sb = sb.append(" ").append(this.externalNumber)
                 .append(" ").append(this.internalNumber)
                 .append("##").append(this.settlement)
                 .append(", ").append(this.county)
