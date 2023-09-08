@@ -40,7 +40,8 @@ export class LoginComponent implements OnInit {
       uuid: undefined,
       name: '',
       email: undefined,
-      active: undefined
+      active: undefined,
+      canEditPrice: undefined
     }
     this.securityService.login(user).subscribe(response => {
       if (response.code === 0) {

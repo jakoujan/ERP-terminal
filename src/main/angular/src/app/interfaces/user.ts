@@ -9,5 +9,6 @@ export interface IUser {
     active: boolean;
     api_token?: string;
     grant_type?: string;
+    canEditPrice: boolean;
 }
 

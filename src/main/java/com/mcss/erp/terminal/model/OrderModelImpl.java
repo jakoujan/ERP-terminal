@@ -11,14 +11,18 @@ import com.mcss.erp.terminal.data.entity.SaleOrder;
 import com.mcss.erp.terminal.print.PrintJob;
 import com.mcss.erp.terminal.print.ThermalTicketPrintJob;
 import java.io.IOException;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class OrderModelImpl implements OrderModel {
 
+    private static final Logger LOGGER = Logger.getLogger(OrderModelImpl.class);
+
     @Autowired
     TicketConfig config;
+
     @Override
     public Response print(SaleOrder order) {
         Response response = Response.getInstance();
@@ -26,10 +30,11 @@ public class OrderModelImpl implements OrderModel {
             PrintJob pj = new ThermalTicketPrintJob(config);
             pj.print(order);
         } catch (IOException ex) {
+            LOGGER.error(ex);
             response.setMessage("Error al imprimir ticket " + ex.getMessage());
             response.setCode(500);
         }
         return response;
     }
-    
+
 }

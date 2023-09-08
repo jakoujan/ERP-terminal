@@ -25,6 +25,7 @@ import { KeyboardService } from 'src/app/services/keyboard.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ProductEditComponent } from '../../common/ui/product-edit/product-edit.component';
 import { OrderFinderComponent } from '../order-finder/order-finder.component';
+import { IUser } from 'src/app/interfaces/user';
 
 @Component({
   selector: 'app-point-of-sale',
@@ -101,6 +102,7 @@ export class PointOfSaleComponent implements OnInit {
   correctQuantity: boolean = false;
   correctPieces: boolean = false;
 
+  user: IUser;
 
   constructor(private productService: ProductService, private catalogService: CatalogsService,
     private rxStompService: RxStompService, private changeDetectorRefs: ChangeDetectorRef,
@@ -108,6 +110,9 @@ export class PointOfSaleComponent implements OnInit {
     private confirmationDialog: ConfirmationDialogService, private keyboardService: KeyboardService, private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
+
+    this.user = (this.sessionStorage.retrieve(constants.SESSION) as Session).user;
+
     this.catalogService.getProductTypes().subscribe(productTypes => this.productTypes = productTypes);
     this.catalogService.getSaleTypes().subscribe(saleTypes => this.saleTypes = saleTypes);
 
@@ -136,31 +141,33 @@ export class PointOfSaleComponent implements OnInit {
   }
 
   changePrice() {
-    if (this.product) {
-      this.keyboard = new Keyboard({
-        onChange: input => this.onChange(input),
-        onKeyPress: button => this.onKeyPress(button),
-        layout: {
-          default: ["1 2 3 {bksp}", "4 5 6 ", "7 8 9 ", " 0 . OK"]
-        },
-        theme: "hg-theme-default hg-layout-numeric numeric-theme"
-      });
-      this.keyboard.setInput('0');
-      this.keyboardService.change(true, true);
-      const subs = this.keyboardService.$controller.subscribe(parameters => {
-        subs.unsubscribe();
-        if (!parameters.show && !this.correctPrice) {
-          const lowerPrice = this.product.price - this.product.maxDiscount;
-          const maxiumPrice = this.product.price + this.product.maxDiscount;
-          this.keyboard.setInput(this.product.price.toString());
-          this.confirmationDialog.showConfirmationDialog('<p>El precio indicado es incorrecto</p> <p>Precio menor permitido: ' + lowerPrice + '</p>' +
-            '<p>Precio mayor permitido: ' + maxiumPrice + '</p>', '450px', 'Aceptar');
-        }
-      })
-    } else {
-      this.snackBar.open('Seleccione el producto primero', 'Cerrar', {
-        duration: 1500
-      });
+    if (this.user.canEditPrice) {
+      if (this.product) {
+        this.keyboard = new Keyboard({
+          onChange: input => this.onChange(input),
+          onKeyPress: button => this.onKeyPress(button),
+          layout: {
+            default: ["1 2 3 {bksp}", "4 5 6 ", "7 8 9 ", " 0 . OK"]
+          },
+          theme: "hg-theme-default hg-layout-numeric numeric-theme"
+        });
+        this.keyboard.setInput('0');
+        this.keyboardService.change(true, true);
+        const subs = this.keyboardService.$controller.subscribe(parameters => {
+          subs.unsubscribe();
+          if (!parameters.show && !this.correctPrice) {
+            const lowerPrice = this.product.price - this.product.maxDiscount;
+            const maxiumPrice = this.product.price + this.product.maxDiscount;
+            this.keyboard.setInput(this.product.price.toString());
+            this.confirmationDialog.showConfirmationDialog('<p>El precio indicado es incorrecto</p> <p>Precio menor permitido: ' + lowerPrice + '</p>' +
+              '<p>Precio mayor permitido: ' + maxiumPrice + '</p>', '450px', 'Aceptar');
+          }
+        })
+      } else {
+        this.snackBar.open('Seleccione el producto primero', 'Cerrar', {
+          duration: 1500
+        });
+      }
     }
   }
 
@@ -381,12 +388,12 @@ export class PointOfSaleComponent implements OnInit {
   }
 
   save() {
-    const session: Session = this.sessionStorage.retrieve(constants.SESSION);
+
 
     this.order.customer = this.customer;
     this.order.taxes = this.qtax;
     this.order.total = this.total;
-    this.order.user = session.user;
+    this.order.user = this.user;
     this.order.amount = this.totalAmount;
     this.order.saleType = this.saleType;
     this.order.products = this.order.products.reverse();

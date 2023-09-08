@@ -1,8 +1,3 @@
-import { environment, constants } from 'src/environments/environment';
-import { HttpClient } from '@angular/common/http';
-import { Session } from '../interfaces/session';
-import { IResponse } from '../interfaces/response';
-
 export enum ContentType {
   FORM_URLENCODED,
   JSON,
