@@ -5,7 +5,7 @@ export enum ContentType {
 }
 
 export interface IParam {
-  value: string | number;
+  value: string | number | boolean;
   name: string;
 }
 

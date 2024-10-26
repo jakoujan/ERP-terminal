@@ -19,6 +19,7 @@ import com.ispc.slibrary.helper.NumberToLetterHelper;
 import com.mcss.erp.terminal.configuration.TicketConfig;
 import com.mcss.erp.terminal.data.entity.ProductOrder;
 import com.mcss.erp.terminal.data.entity.SaleOrder;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,6 +33,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import javax.imageio.ImageIO;
 import javax.print.PrintService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,17 +53,25 @@ public class ThermalTicketPrintJob implements PrintJob {
     @Override
     public void print(SaleOrder order) throws FileNotFoundException, IOException {
         LOGGER.info("Impresión iniciada");
-        //SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         SimpleDateFormat hourformatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         NumberFormat currencyFormat = new DecimalFormat("#,###.00");
 
         Style titleStyle = new Style()
-                .setFontSize(Style.FontSize._2, Style.FontSize._1)
+                .setFontSize(Style.FontSize._1, Style.FontSize._1)
+                .setBold(true)
                 .setJustification(EscPosConst.Justification.Center);
 
         Style subtitleStyle = new Style()
                 .setFontSize(Style.FontSize._1, Style.FontSize._1)
                 .setJustification(EscPosConst.Justification.Center);
+        Style centerLabelStyle = new Style()
+                .setFontSize(Style.FontSize._1, Style.FontSize._1)
+                .setJustification(EscPosConst.Justification.Center);
+        Style centerLabelStyleBolded = new Style()
+                .setFontSize(Style.FontSize._1, Style.FontSize._1)
+                .setJustification(EscPosConst.Justification.Center)
+                .setBold(true);
 
         Style labelStyle = new Style()
                 .setFontSize(Style.FontSize._1, Style.FontSize._1)
@@ -79,25 +89,27 @@ public class ThermalTicketPrintJob implements PrintJob {
             EscPosImage escposImage = new EscPosImage(new CoffeeImageImpl(image), algorithm);
             ps.feed(1);
             ps.write(imageWrapper, escposImage);
-            ps.feed(1);
-            Arrays.asList(config.getBussinesName().split("##")).forEach(line -> {
+            ps.feed(2);
+            ps.writeLF(titleStyle, config.getBussinesName().toUpperCase());
+            ps.writeLF(titleStyle, config.getTaxSegment().toUpperCase());
+            Arrays.asList(config.getAddress().split("@@")).forEach(line -> {
                 try {
-                    ps.writeLF(titleStyle, line.toUpperCase());
-                } catch (IOException ex) {
-
+                    ps.writeLF(centerLabelStyle, line.toUpperCase());
+                } catch (IOException ignore) {
                 }
             });
+            ps.writeLF(titleStyle, config.getTaxId().toUpperCase());
             ps.feed(1);
-            ps.writeLF(subtitleStyle, config.getTaxid().toUpperCase());
-            ps.writeLF(subtitleStyle, "REGIMEN DE INCORPORACION FISCAL");
+            ps.writeLF(centerLabelStyle, config.getTelephone());
+            if (config.getShowTermsOfSale()) {
+                Arrays.asList(config.getTermsOfSale().split("@@")).forEach(line -> {
+                    try {
+                        ps.writeLF(centerLabelStyleBolded, line.toUpperCase());
+                    } catch (IOException ignore) {
+                    }
+                });
+            }
             ps.feed(1);
-            Arrays.asList(config.getAddress().split("##")).forEach(line -> {
-                try {
-                    ps.writeLF(subtitleStyle, line.toUpperCase());
-                } catch (IOException ex) {
-
-                }
-            });
             ps.write(subtitleStyle, "Telefono(s): ");
             ps.writeLF(subtitleStyle, config.getPhone());
             ps.write(subtitleStyle, "Whatsapp: ");
@@ -142,13 +154,11 @@ public class ThermalTicketPrintJob implements PrintJob {
                 ps.writeLF(fixedLengthString("$" + currencyFormat.format(p.getAmount().setScale(2, RoundingMode.HALF_UP)), 12));
                 ps.writeLF("················································");
             }
-
             if (order.getProducts().size() > 1) {
                 ps.feed(1);
                 ps.write("KILOS: ");
                 ps.write(kilos.setScale(2, RoundingMode.HALF_UP).toString());
             }
-
             ps.feed(1);
             ps.write(labelStyle, "FAVOR DE PAGAR EN CAJA     TOTAL: ");
             ps.writeLF(labelStyle, "$" + currencyFormat.format(order.getTotal().setScale(0, RoundingMode.HALF_UP)));

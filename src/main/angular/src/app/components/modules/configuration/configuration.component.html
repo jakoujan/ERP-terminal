@@ -22,6 +22,17 @@
             </mat-form-field>
           </div>
         </div>
+        <div class="row">
+          <div class="col">
+            <mat-form-field class="input-full-width" appearance="fill">
+              <mat-label>Host</mat-label>
+              <input matInput type="text" formControlName="host" placeholder="Host">
+              <mat-error>
+                <custom-mat-error [control]="form.controls.host"></custom-mat-error>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
       </form>
     </mat-expansion-panel>
   </mat-accordion>

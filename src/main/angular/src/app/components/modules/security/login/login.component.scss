@@ -13,17 +13,28 @@ div.login {
   justify-content: center;
   align-items: center;
   background: --primary-color-dark;
+
+  h1 {
+    text-transform: uppercase;
+    font-weight: 900;
+    font-size: 24px;
+    text-align: center;
+    padding: 10px 0;
+    color: #003757;
+  }
 }
 
 mat-card {
   width: 350px;
 }
 
-mat-form-field, mat-checkbox {
+mat-form-field,
+mat-checkbox {
   width: 80%;
   display: block;
   margin: auto;
 }
+
 mat-card-content {
   margin-top: 20px;
 }
@@ -34,4 +45,3 @@ mat-card-content {
   width: 80%;
   margin: 20px auto;
 }
-

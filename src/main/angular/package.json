@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "export NODE_OPTIONS=--openssl-legacy-provider && ng serve --proxy-config proxy.conf.json",
-    "migrate": "export NODE_OPTIONS=--openssl-legacy-provider && ng build --prod --output-hashing=none  --output-path ../resources/static/",
+    "migrate": "export NODE_OPTIONS=--openssl-legacy-provider && ng build --prod --output-hashing=none --output-path ../resources/static/",
     "migrate-win": "ng build --prod --output-hashing=none --output-path ..\\resources\\static\\",
     "build": "ng build",
     "test": "ng test",

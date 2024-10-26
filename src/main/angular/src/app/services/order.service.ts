@@ -5,6 +5,7 @@ import { ISaleOrderFilter } from '../filters/sale-order-filter';
 import { IResponse } from '../interfaces/response';
 import { ISaleOrder } from '../interfaces/sale-order';
 import { Service } from './service';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,10 @@ export class OrderService extends Service {
   public static ORDER = '/api/order/';
 
   public save(order: ISaleOrder): Observable<IResponse> {
-    return this.http.post<IResponse>(OrderService.SAVE_ORDER, order);
+    const params = [
+      { name: 'paid', value: environment.PAID_SALE }
+    ];
+    return this.http.post<IResponse>(Service.getApiUrl(OrderService.SAVE_ORDER, params), order);
   }
 
   public print(order: ISaleOrder): Observable<IResponse> {

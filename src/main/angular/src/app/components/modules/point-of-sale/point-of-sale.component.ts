@@ -45,7 +45,8 @@ export class PointOfSaleComponent implements OnInit {
     businessName: "VENTA AL PUBLICO",
     contact: "N/A",
     id: 1,
-    uuid: "cd8429ad-34c1-4a14-9762-a1907c54954d"
+    uuid: "cd8429ad-34c1-4a14-9762-a1907c54954d",
+    productPrices: []
   };
   saleType: ISaleType = {
     id: 1,
@@ -66,7 +67,8 @@ export class PointOfSaleComponent implements OnInit {
       businessName: "VENTA AL PUBLICO",
       contact: "N/A",
       id: 1,
-      uuid: "cd8429ad-34c1-4a14-9762-a1907c54954d"
+      uuid: "cd8429ad-34c1-4a14-9762-a1907c54954d",
+      productPrices: []
     },
     id: undefined,
     orderDate: undefined,
@@ -75,7 +77,10 @@ export class PointOfSaleComponent implements OnInit {
     total: 0,
     saleType: this.saleType,
     user: undefined,
-    uuid: undefined
+    uuid: undefined,
+    warehouse: {
+      id: 1
+    }
   };
 
   productFilter: IProductViewFilter = {
@@ -135,7 +140,7 @@ export class PointOfSaleComponent implements OnInit {
     this.productService.findProduct(productView.id).subscribe(response => {
       this.product = response.fields.entity;
       this.correctPrice = true;
-      this.price = this.product.price;
+      this.price = this.customer.productPrices.find(p => p.product.id === this.product.id)?.price ?? this.product.price;
       this.scale = true;
     });
   }
@@ -396,6 +401,9 @@ export class PointOfSaleComponent implements OnInit {
     this.order.user = this.user;
     this.order.amount = this.totalAmount;
     this.order.saleType = this.saleType;
+    this.order.warehouse = {
+      id: 1
+    }
     this.order.products = this.order.products.reverse();
     this.orderService.save(this.order).subscribe(response => {
       if (response.code === 0) {
@@ -426,7 +434,8 @@ export class PointOfSaleComponent implements OnInit {
         businessName: "VENTA AL PUBLICO",
         contact: "N/A",
         id: 1,
-        uuid: "cd8429ad-34c1-4a14-9762-a1907c54954d"
+        uuid: "cd8429ad-34c1-4a14-9762-a1907c54954d",
+        productPrices: []
       },
       id: undefined,
       orderDate: undefined,
@@ -439,7 +448,10 @@ export class PointOfSaleComponent implements OnInit {
         prefix: "EF"
       },
       user: undefined,
-      uuid: undefined
+      uuid: undefined,
+      warehouse: {
+        id: 1
+      }
     }
     this.product = undefined,
       this.price = 0;
@@ -447,7 +459,8 @@ export class PointOfSaleComponent implements OnInit {
       businessName: "VENTA AL PUBLICO",
       contact: "N/A",
       id: 1,
-      uuid: "cd8429ad-34c1-4a14-9762-a1907c54954d"
+      uuid: "cd8429ad-34c1-4a14-9762-a1907c54954d",
+      productPrices: []
     };
     this.saleType = {
       id: 1,

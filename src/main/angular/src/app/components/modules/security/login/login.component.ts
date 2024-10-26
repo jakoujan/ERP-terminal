@@ -7,7 +7,7 @@ import { Session } from 'src/app/interfaces/session';
 import { IUser } from 'src/app/interfaces/user';
 import { KeyboardService } from 'src/app/services/keyboard.service';
 import { SecurityService } from 'src/app/services/security.service';
-import { constants } from 'src/environments/environment';
+import { constants, environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -17,12 +17,13 @@ import { constants } from 'src/environments/environment';
 export class LoginComponent implements OnInit {
 
   loginForm: FormGroup;
-
+  appName = '';
   constructor(private formBuilder: FormBuilder, private sessionStorage: SessionStorageService,
     private keyboardService: KeyboardService, private securityService: SecurityService,
     private router: Router, private dialogService: ConfirmationDialogService) { }
 
   ngOnInit(): void {
+    this.appName = environment.APP_NAME;
     this.loginForm = this.formBuilder.group({
       user: ['', Validators.required],
       password: ['', Validators.required],

@@ -1,9 +1,14 @@
 <div class="navigation-container">
   <mat-toolbar class="main-nav" color="primary">
-    <div class="title"><p>Carniceria Pabellon</p></div>
+    <div class="title">
+      <p>{{ appName }}</p>
+    </div>
     <div class="filler"></div>
     <button mat-icon-button aria-labelledby="Mostrar el teclado" (click)="activateKeyboard()">
       <mat-icon>{{keyboard}}</mat-icon>
+    </button>
+    <button mat-icon-button aria-labelledby="Pantalla completa" (click)="toggleFullScreen()">
+      <mat-icon>{{screen}}</mat-icon>
     </button>
     <button mat-icon-button aria-labelledby="Configuración" (click)="configuration()">
       <mat-icon>settings</mat-icon>
@@ -17,12 +22,13 @@
       [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="false">
       <mat-nav-list>
         <div class="main-menu">
-          <div class="module" >
+          <div class="module">
             <div class="module-title">
-              <mat-icon class="sep-right-15"></mat-icon> <div>Modulo</div>
+              <mat-icon class="sep-right-15"></mat-icon>
+              <div>Modulo</div>
             </div>
             <div class="submodules">
-              <a  (click)="goto('submodule')">Link</a>
+              <a (click)="goto('submodule')">Link</a>
             </div>
           </div>
         </div>

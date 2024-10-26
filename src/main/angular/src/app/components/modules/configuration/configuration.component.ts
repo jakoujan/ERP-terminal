@@ -32,17 +32,20 @@ export class ConfigurationComponent implements OnInit {
     this.catalogService.getPrinters().subscribe(printers => this.printers = printers);
 
     this.form = this.formBuilder.group({
-      printer: []
+      printer: [undefined, Validators.required],
+      host: [undefined, Validators.required]
     });
 
     this.configurationService.get().subscribe(configuration => {
       this.configuration = configuration;
       this.form.get('printer').setValue(configuration.printer);
+      this.form.get('host').setValue(configuration.host);
     });
   }
 
   public save() {
     this.configuration.printer = this.form.get('printer').value;
+    this.configuration.host = this.form.get('host').value;
     this.configurationService.save(this.configuration).subscribe(response => {
       this.dialogRef.close();
       this.snackBar.open(response.message, 'Cerrar', {

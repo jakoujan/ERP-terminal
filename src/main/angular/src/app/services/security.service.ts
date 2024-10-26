@@ -1,11 +1,8 @@
-import { Injectable } from '@angular/core';
-import { Service, ContentType } from './service';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
 import { IResponse } from '../interfaces/response';
 import { IUser } from '../interfaces/user';
-import { Subject, Observable } from 'rxjs';
-import { SpinnerService } from './spinner.service';
-import { SessionStorageService } from 'ngx-webstorage';
 
 @Injectable({
   providedIn: 'root'

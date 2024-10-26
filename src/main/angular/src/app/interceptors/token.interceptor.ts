@@ -24,12 +24,9 @@ export class TokenInterceptor implements HttpInterceptor {
     this.spinner.show("Cargando");
     const session: Session = this.storage.retrieve(constants.SESSION);
     let url = request.url;
-    if(environment.production) {
-      if(url.indexOf('api') >= 0 || url.indexOf('security') >= 0) {
-        url = environment.API_URL + url;
-      }
+    if (url.indexOf('api') >= 0 || url.indexOf('security') >= 0) {
+      url = environment.API_URL + url;
     }
-    console.log(url);
     if (session) {
       request = request.clone({
         url: url,

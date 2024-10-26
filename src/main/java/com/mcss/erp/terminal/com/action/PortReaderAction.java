@@ -36,6 +36,7 @@ public class PortReaderAction implements ReaderAction {
         String data = "";
         try {
             data = line.replaceAll(PATTERN, "").trim();
+            LOGGER.info("line: [" + line + ']');
             if (!data.equals(last)) {
                 last = data;
                 Read read = new Read();

@@ -14,4 +14,7 @@ export interface ISaleOrder {
   products: Array<IProductOrder>;
   customer: ICustomer;
   user: IUser;
+  warehouse: {
+    id: number;
+  }
 }
