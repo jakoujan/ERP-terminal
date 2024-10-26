@@ -9,7 +9,7 @@ import { map, shareReplay } from 'rxjs/operators';
 import { ConfigurationComponent } from 'src/app/components/modules/configuration/configuration.component';
 import { Session } from 'src/app/interfaces/session';
 import { KeyboardService } from 'src/app/services/keyboard.service';
-import { constants } from 'src/environments/environment';
+import { constants, environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-main-navigation',
@@ -26,7 +26,8 @@ export class MainNavigationComponent implements OnInit {
   drawer: MatSidenav;
 
   shk: boolean = false;
-
+  appName: string = environment.APP_NAME;
+  screen = 'fullscreen';
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(map(result => result.matches), shareReplay());
 
@@ -34,6 +35,17 @@ export class MainNavigationComponent implements OnInit {
     private keyboardService: KeyboardService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
+    this.appName = environment.APP_NAME;
+  }
+
+  public toggleFullScreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+      this.screen = 'fullscreen_exit';
+    } else if (document.exitFullscreen) {
+      this.screen = 'fullscreen';
+      document.exitFullscreen();
+    }
   }
 
   public goto(action: string) {

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.mcss.erp.terminal.model;
 
 import com.github.anastaciocintra.output.PrinterOutputStream;
@@ -10,14 +5,15 @@ import com.ispc.slibrary.dto.Response;
 import com.mcss.erp.terminal.com.ConnectorHandler;
 import com.mcss.erp.terminal.configuration.Configuration;
 import com.mcss.erp.terminal.configuration.TicketConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 @Component
 public class ConfigurationModelImpl implements ConfigurationModel {

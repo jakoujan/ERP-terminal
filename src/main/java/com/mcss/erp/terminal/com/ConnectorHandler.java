@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.mcss.erp.terminal.com;
 
 import com.mcss.erp.terminal.com.action.PortReaderAction;
@@ -10,14 +5,18 @@ import com.mcss.mcom.Communicator;
 import com.mcss.mcom.eth.EthernetCommunicator;
 import com.mcss.mcom.serial.PortConfig;
 import com.mcss.mcom.serial.SerialCommunicator;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+@Getter
 @Component
 public class ConnectorHandler {
 
@@ -49,82 +48,11 @@ public class ConnectorHandler {
     public ConnectorHandler() {
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getBaudrate() {
-        return baudrate;
-    }
-
-    public void setBaudrate(Integer baudrate) {
-        this.baudrate = baudrate;
-    }
-
-    public Integer getParity() {
-        return parity;
-    }
-
-    public void setParity(Integer parity) {
-        this.parity = parity;
-    }
-
-    public Integer getDatabits() {
-        return databits;
-    }
-
-    public void setDatabits(Integer databits) {
-        this.databits = databits;
-    }
-
-    public Integer getStopbit() {
-        return stopbit;
-    }
-
-    public void setStopbit(Integer stopbit) {
-        this.stopbit = stopbit;
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public Integer getPort() {
-        return port;
-    }
-
-    public void setPort(Integer port) {
-        this.port = port;
-    }
-
-    public PortConfig getPortConfig() {
-        return portConfig;
-    }
-
-    public void setPortConfig(PortConfig portConfig) {
-        this.portConfig = portConfig;
-    }
-
-    public Communicator getPortCommunicator() {
-        return portCommunicator;
-    }
-
-    public void setPortCommunicator(Communicator portCommunicator) {
-        this.portCommunicator = portCommunicator;
-    }
 
     @PostConstruct
     public void onInit() throws Exception {
         this.portConfig = new PortConfig(name, baudrate, parity, databits, stopbit);
-        if (LOGGER.isInfoEnabled()) {
+        if (LOGGER.isTraceEnabled()) {
             this.portCommunicator = new EthernetCommunicator(host, port, action, 60);
             this.running = false;
         } else {

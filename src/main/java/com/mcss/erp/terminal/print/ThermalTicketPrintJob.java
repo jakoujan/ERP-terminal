@@ -19,6 +19,7 @@ import com.ispc.slibrary.helper.NumberToLetterHelper;
 import com.mcss.erp.terminal.configuration.TicketConfig;
 import com.mcss.erp.terminal.data.entity.ProductOrder;
 import com.mcss.erp.terminal.data.entity.SaleOrder;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,14 +29,15 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Iterator;
 import javax.imageio.ImageIO;
 import javax.print.PrintService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
  * @author edgar
  */
 public class ThermalTicketPrintJob implements PrintJob {
@@ -55,41 +57,59 @@ public class ThermalTicketPrintJob implements PrintJob {
         NumberFormat currencyFormat = new DecimalFormat("#,###.00");
 
         Style titleStyle = new Style()
-                .setFontSize(Style.FontSize._2, Style.FontSize._2)
+                .setFontSize(Style.FontSize._1, Style.FontSize._1)
+                .setBold(true)
                 .setJustification(EscPosConst.Justification.Center);
 
         Style subtitleStyle = new Style()
                 .setFontSize(Style.FontSize._1, Style.FontSize._1)
                 .setJustification(EscPosConst.Justification.Center);
+        Style centerLabelStyle = new Style()
+                .setFontSize(Style.FontSize._1, Style.FontSize._1)
+                .setJustification(EscPosConst.Justification.Center);
+        Style centerLabelStyleBolded = new Style()
+                .setFontSize(Style.FontSize._1, Style.FontSize._1)
+                .setJustification(EscPosConst.Justification.Center)
+                .setBold(true);
 
         Style labelStyle = new Style()
                 .setFontSize(Style.FontSize._1, Style.FontSize._1)
                 .setBold(true);
 
         PrintService writeService = PrinterOutputStream.getPrintServiceByName(config.getPrinter());
-        PrinterOutputStream writeerOutputStream = new PrinterOutputStream(writeService);
+        PrinterOutputStream writerOutputStream = new PrinterOutputStream(writeService);
 
         Bitonal algorithm = new BitonalOrderedDither();
         BufferedImage image = ImageIO.read(new File(config.getLogoPath()));
         String saleDate = hourformatter.format(order.getOrderDate());
 
-        try (EscPos ps = new EscPos(writeerOutputStream)) {
+        try (EscPos ps = new EscPos(writerOutputStream)) {
             BitImageWrapper imageWrapper = new BitImageWrapper().setJustification(EscPosConst.Justification.Center);
             EscPosImage escposImage = new EscPosImage(new CoffeeImageImpl(image), algorithm);
             ps.feed(1);
             ps.write(imageWrapper, escposImage);
-            ps.feed(5);
+            ps.feed(2);
             ps.writeLF(titleStyle, config.getBussinesName().toUpperCase());
-            ps.writeLF(subtitleStyle, "601 - general de ley de personas morales".toUpperCase());
-            ps.writeLF(subtitleStyle, "ALUMINIO 377");
-            ps.writeLF(subtitleStyle, "20 DE NOVIEMBRE");
-            ps.writeLF(subtitleStyle, "DEL VENUSTIANO CARRANZA");
-            ps.writeLF(subtitleStyle, "CIUDAD DE MEXICO, 15300");
-            ps.writeLF(subtitleStyle, "DCM100826V36");
+            ps.writeLF(titleStyle, config.getTaxSegment().toUpperCase());
+            Arrays.asList(config.getAddress().split("@@")).forEach(line -> {
+                try {
+                    ps.writeLF(centerLabelStyle, line.toUpperCase());
+                } catch (IOException ignore) {
+                }
+            });
+            ps.writeLF(titleStyle, config.getTaxId().toUpperCase());
             ps.feed(1);
-            ps.writeLF(subtitleStyle, "TELS.: 5557897887, 5557045743");
+            ps.writeLF(centerLabelStyle, config.getTelephone());
+            if (config.getShowTermsOfSale()) {
+                Arrays.asList(config.getTermsOfSale().split("@@")).forEach(line -> {
+                    try {
+                        ps.writeLF(centerLabelStyleBolded, line.toUpperCase());
+                    } catch (IOException ignore) {
+                    }
+                });
+            }
+            ps.feed(1);
             ps.writeLF("------------------------------------------------");
-            //ps.writeLF(titleStyle, "Orden de venta");
             ps.feed(1);
             ps.write(labelStyle, "Folio: ");
             ps.write(order.getId());
@@ -103,7 +123,7 @@ public class ThermalTicketPrintJob implements PrintJob {
             ps.writeLF(order.getCustomer().getBusinessName());
             ps.feed(1);
             ps.writeLF("CONCEPTO");
-            ps.writeLF("CANTIDAD   PIEZAS     IMPORTE      TOTAL");
+            ps.writeLF("PIEZAS     CANTIDAD    IMPORTE      TOTAL");
             ps.writeLF("------------------------------------------------");
 
             Iterator<ProductOrder> pits = order.getProducts().iterator();
@@ -112,8 +132,8 @@ public class ThermalTicketPrintJob implements PrintJob {
                 ProductOrder p = pits.next();
                 kilos = kilos.add(p.getQuantity());
                 ps.writeLF(labelStyle, p.getProduct().getLongDescription());
-                ps.write(fixedLengthString(p.getQuantity().toString(), 10));
                 ps.write(fixedLengthString(p.getPieces() != null ? p.getPieces().toString() : "", 10));
+                ps.write(fixedLengthString(p.getQuantity().toString(), 10));
                 ps.write(fixedLengthString("$" + currencyFormat.format(p.getPrice()), 12));
                 ps.writeLF(fixedLengthString("$" + currencyFormat.format(p.getAmount().setScale(2, RoundingMode.HALF_UP)), 12));
                 ps.writeLF("················································");
@@ -129,9 +149,12 @@ public class ThermalTicketPrintJob implements PrintJob {
             ps.feed(1);
             String convertNumberToLetter = NumberToLetterHelper.convertNumberToLetter(order.getTotal().setScale(2, RoundingMode.HALF_UP).toString());
             ps.writeLF("(" + convertNumberToLetter + ")");
-            //ps.writeLF(subtitleStyle, "ESTE NO ES UN COMPROBANTE DE PAGO");
-            ps.feed(2);
-
+            /*ps.feed(1);
+            ps.writeLF("------------------------------------------------");
+            ps.writeLF(subtitleStyle, "Se requiere factura favor de mandar sus datos al siguiente número whatsapp");
+            ps.writeLF(subtitleStyle, "TEL.: 55560918085");
+            ps.writeLF("------------------------------------------------");
+            ps.feed(1);*/
             BarCode barcode = new BarCode()
                     .setBarCodeSize(4, 120)
                     .setJustification(EscPosConst.Justification.Center);

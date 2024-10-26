@@ -2,7 +2,9 @@ import { InjectableRxStompConfig } from "@stomp/ng2-stompjs";
 
 export const environment = {
   production: true,
-  API_URL: 'http://192.168.1.8:8080/',
+  API_URL: 'http://192.168.2:8080/',
+  APP_NAME: '',
+  PAID_SALE: false,
   websocket: {
     uri: 'ws://' + window.location.host + '/ws',
     topicPrefix: "/web/port",

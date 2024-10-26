@@ -5,9 +5,18 @@
  */
 package com.mcss.erp.terminal.configuration;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 @Component
 public class TicketConfig {
 
@@ -19,46 +28,15 @@ public class TicketConfig {
     private String bussinesName;
     @Value("${ticket.address}")
     private String address;
-    
-    public TicketConfig() {
-    }
+    @Value("${ticket.telephone}")
+    private String telephone;
+    @Value("${ticket.tax.segment}")
+    private String taxSegment;
+    @Value("${ticket.tax.id}")
+    private String taxId;
+    @Value("${ticket.terms.sale.show}")
+    private Boolean showTermsOfSale;
+    @Value("${ticket.terms.sale}")
+    private String termsOfSale;
 
-    public TicketConfig(String printer, String logoPath, String bussinesName, String address) {
-        this.printer = printer;
-        this.logoPath = logoPath;
-        this.bussinesName = bussinesName;
-        this.address = address;
-    }
-
-    public String getPrinter() {
-        return printer;
-    }
-
-    public void setPrinter(String printer) {
-        this.printer = printer;
-    }
-
-    public String getLogoPath() {
-        return logoPath;
-    }
-
-    public void setLogoPath(String logoPath) {
-        this.logoPath = logoPath;
-    }
-
-    public String getBussinesName() {
-        return bussinesName;
-    }
-
-    public void setBussinesName(String bussinesName) {
-        this.bussinesName = bussinesName;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
 }
