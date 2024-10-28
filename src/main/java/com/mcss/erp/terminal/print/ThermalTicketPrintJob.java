@@ -134,7 +134,7 @@ public class ThermalTicketPrintJob implements PrintJob {
                 ps.writeLF(labelStyle, p.getProduct().getLongDescription());
                 ps.write(fixedLengthString(p.getPieces() != null ? p.getPieces().toString() : "", 10));
                 ps.write(fixedLengthString(p.getQuantity().toString(), 10));
-                ps.write(fixedLengthString("$" + currencyFormat.format(p.getPrice()), 12));
+                ps.write(fixedLengthString("$" + currencyFormat.format(p.getPrice()) + checkIfEdited(p), 12));
                 ps.writeLF(fixedLengthString("$" + currencyFormat.format(p.getAmount().setScale(2, RoundingMode.HALF_UP)), 12));
                 ps.writeLF("················································");
             }
@@ -162,6 +162,10 @@ public class ThermalTicketPrintJob implements PrintJob {
             ps.feed(5);
             ps.cut(EscPos.CutMode.FULL);
         }
+    }
+
+    private String checkIfEdited(ProductOrder p) {
+        return p.getEdited() ? "*" : "";
     }
 
     public String fixedLengthString(String string, int count) {
