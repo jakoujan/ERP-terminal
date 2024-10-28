@@ -78,13 +78,13 @@ public class ThermalTicketPrintJob implements PrintJob {
                 .setBold(true);
 
         PrintService writeService = PrinterOutputStream.getPrintServiceByName(config.getPrinter());
-        PrinterOutputStream writeerOutputStream = new PrinterOutputStream(writeService);
+        PrinterOutputStream writerOutputStream = new PrinterOutputStream(writeService);
 
         Bitonal algorithm = new BitonalOrderedDither();
         BufferedImage image = ImageIO.read(new File(config.getLogoPath()));
         String saleDate = hourformatter.format(order.getOrderDate());
 
-        try (EscPos ps = new EscPos(writeerOutputStream)) {
+        try (EscPos ps = new EscPos(writerOutputStream)) {
             BitImageWrapper imageWrapper = new BitImageWrapper().setJustification(EscPosConst.Justification.Center);
             EscPosImage escposImage = new EscPosImage(new CoffeeImageImpl(image), algorithm);
             ps.feed(1);

@@ -1,5 +1,9 @@
-/src/main/angular/node_modules/
+
 /src/main/resources/static/
+/erp-terminal-dist/
+/.mvn/
+/.idea/
+/target/
 /dist/
 /tpvma.zip
 /.idea/
