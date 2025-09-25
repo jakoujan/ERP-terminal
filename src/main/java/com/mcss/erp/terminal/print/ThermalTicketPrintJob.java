@@ -19,7 +19,6 @@ import com.ispc.slibrary.helper.NumberToLetterHelper;
 import com.mcss.erp.terminal.configuration.TicketConfig;
 import com.mcss.erp.terminal.data.entity.ProductOrder;
 import com.mcss.erp.terminal.data.entity.SaleOrder;
-
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -33,7 +32,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import javax.imageio.ImageIO;
 import javax.print.PrintService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,14 +108,8 @@ public class ThermalTicketPrintJob implements PrintJob {
                 });
             }
             ps.feed(1);
-            ps.write(subtitleStyle, "Telefono(s): ");
-            ps.writeLF(subtitleStyle, config.getPhone());
-            ps.write(subtitleStyle, "Whatsapp: ");
-            ps.writeLF(subtitleStyle, config.getWhatsapp());
-            ps.feed(1);
-            ps.writeLF(subtitleStyle, config.getSlogan().toUpperCase());
+            ps.writeLF(subtitleStyle, "TELS.: 5557897887, 5557045743");
             ps.writeLF("------------------------------------------------");
-            //ps.writeLF(titleStyle, "Orden de venta");
             ps.feed(1);
             ps.write(labelStyle, "Folio: ");
             ps.write(order.getId());
@@ -129,17 +121,9 @@ public class ThermalTicketPrintJob implements PrintJob {
             ps.writeLF(order.getUser().getName());
             ps.write(labelStyle, "Cliente:  ");
             ps.writeLF(order.getCustomer().getBusinessName());
-            ps.writeLF(labelStyle, "Dirección:  ");
-            Arrays.asList(order.getCustomer().getAddress().split("##")).forEach(line -> {
-                try {
-                    ps.writeLF(line.toUpperCase());
-                } catch (IOException ex) {
-
-                }
-            });
             ps.feed(1);
             ps.writeLF("CONCEPTO");
-            ps.writeLF("CANTIDAD   PIEZAS     IMPORTE      TOTAL");
+            ps.writeLF("PIEZAS     CANTIDAD    IMPORTE      TOTAL");
             ps.writeLF("------------------------------------------------");
 
             Iterator<ProductOrder> pits = order.getProducts().iterator();
@@ -148,9 +132,9 @@ public class ThermalTicketPrintJob implements PrintJob {
                 ProductOrder p = pits.next();
                 kilos = kilos.add(p.getQuantity());
                 ps.writeLF(labelStyle, p.getProduct().getLongDescription());
-                ps.write(fixedLengthString(p.getQuantity().toString(), 10));
                 ps.write(fixedLengthString(p.getPieces() != null ? p.getPieces().toString() : "", 10));
-                ps.write(fixedLengthString("$" + currencyFormat.format(p.getPrice()), 12));
+                ps.write(fixedLengthString(p.getQuantity().toString(), 10));
+                ps.write(fixedLengthString("$" + currencyFormat.format(p.getPrice()) + checkIfEdited(p), 12));
                 ps.writeLF(fixedLengthString("$" + currencyFormat.format(p.getAmount().setScale(2, RoundingMode.HALF_UP)), 12));
                 ps.writeLF("················································");
             }
@@ -192,6 +176,12 @@ public class ThermalTicketPrintJob implements PrintJob {
             //ps.writeLF(subtitleStyle, "ESTE NO ES UN COMPROBANTE DE PAGO");
             //ps.feed(2);
 
+            /*ps.feed(1);
+            ps.writeLF("------------------------------------------------");
+            ps.writeLF(subtitleStyle, "Se requiere factura favor de mandar sus datos al siguiente número whatsapp");
+            ps.writeLF(subtitleStyle, "TEL.: 55560918085");
+            ps.writeLF("------------------------------------------------");
+            ps.feed(1);*/
             BarCode barcode = new BarCode()
                     .setBarCodeSize(4, 120)
                     .setJustification(EscPosConst.Justification.Center);
@@ -199,6 +189,10 @@ public class ThermalTicketPrintJob implements PrintJob {
             ps.feed(5);
             ps.cut(EscPos.CutMode.FULL);
         }
+    }
+
+    private String checkIfEdited(ProductOrder p) {
+        return p.getEdited() ? "*" : "";
     }
 
     public String fixedLengthString(String string, int count) {

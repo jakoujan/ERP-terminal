@@ -26,21 +26,8 @@ public class TicketConfig {
     private String logoPath;
     @Value("${ticket.bussinesname}")
     private String bussinesName;
-    @Value("${ticket.slogan}")
-    private String slogan;
     @Value("${ticket.address}")
     private String address;
-    @Value("${ticket.footer}")
-    private String footer;
-    @Value("${ticket.taxid}")
-    private String taxid;
-    @Value("${ticket.phone}")
-    private String phone;
-    @Value("${ticket.whatsapp}")
-    private String whatsapp;
-
-    public TicketConfig() {
-    }
     @Value("${ticket.telephone}")
     private String telephone;
     @Value("${ticket.tax.segment}")
@@ -52,12 +39,4 @@ public class TicketConfig {
     @Value("${ticket.terms.sale}")
     private String termsOfSale;
 
-    public TicketConfig(String printer, String logoPath, String bussinesName, String address, String slogan, String footer) {
-        this.printer = printer;
-        this.logoPath = logoPath;
-        this.bussinesName = bussinesName;
-        this.address = address;
-        this.slogan = slogan;
-        this.footer = footer;
-    }
 }
