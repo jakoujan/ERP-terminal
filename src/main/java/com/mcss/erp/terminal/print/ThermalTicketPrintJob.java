@@ -147,7 +147,10 @@ public class ThermalTicketPrintJob implements PrintJob {
             ps.write(labelStyle, "FAVOR DE PAGAR EN CAJA     TOTAL: ");
             ps.writeLF(labelStyle, "$" + currencyFormat.format(order.getTotal().setScale(0, RoundingMode.HALF_UP)));
             ps.feed(1);
-            String convertNumberToLetter = NumberToLetterHelper.convertNumberToLetter(order.getTotal().setScale(2, RoundingMode.HALF_UP).toString());
+            var ttl = order.getTotal().setScale(2, RoundingMode.HALF_UP).toString().replace(',', '.');
+            LOGGER.info(ttl);
+            LOGGER.info(order.getTotal().setScale(2, RoundingMode.HALF_UP).toString());
+            String convertNumberToLetter = NumberToLetterHelper.convertNumberToLetter(ttl);
             ps.writeLF("(" + convertNumberToLetter + ")");
             /*ps.feed(1);
             ps.writeLF("------------------------------------------------");
