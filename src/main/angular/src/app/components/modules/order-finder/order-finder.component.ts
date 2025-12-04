@@ -37,7 +37,7 @@ export class OrderFinderComponent implements OnInit {
       amount: undefined,
       taxes: undefined,
       total: undefined,
-      statusId: 1,
+      statusId: undefined,
       status: undefined,
       saleType: undefined,
       saleTypeId: undefined

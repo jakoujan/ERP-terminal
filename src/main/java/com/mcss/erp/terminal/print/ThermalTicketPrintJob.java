@@ -129,14 +129,7 @@ public class ThermalTicketPrintJob implements PrintJob {
             ps.writeLF(order.getUser().getName());
             ps.write(labelStyle, "Cliente:  ");
             ps.writeLF(order.getCustomer().getBusinessName());
-            ps.writeLF(labelStyle, "Dirección:  ");
-            Arrays.asList(order.getCustomer().getAddress().split("##")).forEach(line -> {
-                try {
-                    ps.writeLF(line.toUpperCase());
-                } catch (IOException ex) {
 
-                }
-            });
             ps.feed(1);
             ps.writeLF("CONCEPTO");
             ps.writeLF("CANTIDAD   PIEZAS     IMPORTE      TOTAL");

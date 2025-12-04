@@ -52,7 +52,7 @@ public class ConnectorHandler {
     @PostConstruct
     public void onInit() throws Exception {
         this.portConfig = new PortConfig(name, baudrate, parity, databits, stopbit);
-        if (LOGGER.isTraceEnabled()) {
+        if (LOGGER.isInfoEnabled()) {
             this.portCommunicator = new EthernetCommunicator(host, port, action, 60);
             this.running = false;
         } else {

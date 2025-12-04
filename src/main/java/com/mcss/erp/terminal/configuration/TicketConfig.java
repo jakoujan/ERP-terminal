@@ -32,15 +32,10 @@ public class TicketConfig {
     private String address;
     @Value("${ticket.footer}")
     private String footer;
-    @Value("${ticket.taxid}")
-    private String taxid;
     @Value("${ticket.phone}")
     private String phone;
     @Value("${ticket.whatsapp}")
     private String whatsapp;
-
-    public TicketConfig() {
-    }
     @Value("${ticket.telephone}")
     private String telephone;
     @Value("${ticket.tax.segment}")
