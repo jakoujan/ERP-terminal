@@ -10,15 +10,15 @@ import com.mcss.erp.terminal.configuration.TicketConfig;
 import com.mcss.erp.terminal.data.entity.SaleOrder;
 import com.mcss.erp.terminal.print.PrintJob;
 import com.mcss.erp.terminal.print.ThermalTicketPrintJob;
-import java.io.IOException;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
-public class OrderModelImpl implements OrderModel {
+import java.io.IOException;
 
-    private static final Logger LOGGER = Logger.getLogger(OrderModelImpl.class);
+@Component
+@Slf4j
+public class OrderModelImpl implements OrderModel {
 
     @Autowired
     TicketConfig config;
@@ -30,7 +30,7 @@ public class OrderModelImpl implements OrderModel {
             PrintJob pj = new ThermalTicketPrintJob(config);
             pj.print(order);
         } catch (IOException ex) {
-            LOGGER.error(ex);
+            log.error("Error al imprimir ticket", ex);
             response.setMessage("Error al imprimir ticket " + ex.getMessage());
             response.setCode(500);
         }

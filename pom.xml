@@ -15,7 +15,7 @@
     <description>Terminal punto de venta </description>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
     </properties>
 
     <dependencies>
@@ -59,9 +59,9 @@
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>com.mcss</groupId>
-            <artifactId>mcom</artifactId>
-            <version>1.1.0-RELEASE</version>
+            <groupId>com.jakdev</groupId>
+            <artifactId>jcom</artifactId>
+            <version>1.1.3-RELEASE</version>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -77,7 +77,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.32</version>
+            <version>1.18.36</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -87,6 +87,14 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>14</source>
+                    <target>14</target>
+                </configuration>
             </plugin>
         </plugins>
     </build>

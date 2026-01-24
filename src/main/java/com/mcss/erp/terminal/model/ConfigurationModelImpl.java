@@ -2,7 +2,7 @@ package com.mcss.erp.terminal.model;
 
 import com.github.anastaciocintra.output.PrinterOutputStream;
 import com.ispc.slibrary.dto.Response;
-import com.mcss.erp.terminal.com.ConnectorHandler;
+import com.mcss.erp.terminal.com.ConnectorWebSocketHandler;
 import com.mcss.erp.terminal.configuration.Configuration;
 import com.mcss.erp.terminal.configuration.TicketConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class ConfigurationModelImpl implements ConfigurationModel {
     TicketConfig ticketConfig;
 
     @Autowired
-    ConnectorHandler connectorHandler;
+    ConnectorWebSocketHandler connectorHandler;
 
     @Override
     public Configuration get() {
@@ -47,10 +47,10 @@ public class ConfigurationModelImpl implements ConfigurationModel {
         Properties prop = new Properties();
         try (OutputStream out = new FileOutputStream(CONFIG_FILE)) {
             prop.setProperty("ticket.logo", this.ticketConfig.getLogoPath());
-            prop.setProperty("ticket.bussinesname", this.ticketConfig.getBussinesName());
+            prop.setProperty("ticket.bussines.name", this.ticketConfig.getBusinessName());
             prop.setProperty("ticket.printer", this.ticketConfig.getPrinter());
             prop.setProperty("ticket.address", this.ticketConfig.getAddress());
-            prop.setProperty("ticket.taxid", this.ticketConfig.getTaxid());
+            prop.setProperty("ticket.taxid", this.ticketConfig.getTaxId());
             prop.setProperty("ticket.slogan", this.ticketConfig.getSlogan());
             prop.setProperty("ticket.footer", this.ticketConfig.getFooter());
 

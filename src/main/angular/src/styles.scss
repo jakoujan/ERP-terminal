@@ -1,5 +1,4 @@
 @import url("../node_modules/simple-keyboard/build/css/index.css");
-@import url("../node_modules/material-design-icons-iconfont/dist/material-design-icons.css");
 
 html,
 body {
@@ -143,6 +142,7 @@ tr.mat-row:hover {
   .mat-form-field-wrapper {
     padding-bottom: 8px;
   }
+
   .module-options {
     button {
       margin-left: 10px;
@@ -200,6 +200,7 @@ tr.mat-row:hover {
   margin-bottom: 10px;
   font-size: 25px;
   font-weight: 300;
+
   .card-header-subtitle {
     margin: 0 !important;
   }
@@ -261,6 +262,7 @@ tr.mat-row:hover {
   position: fixed;
   top: 10px;
   right: 30px;
+
   button {
     color: #fff;
   }
@@ -282,8 +284,7 @@ div.resume {
     font-weight: 800;
   }
 
-  p.data {
-  }
+  p.data {}
 }
 
 .mat-list .mat-list-item .mat-list-item-content {
@@ -294,6 +295,7 @@ html,
 body {
   height: 100%;
 }
+
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;

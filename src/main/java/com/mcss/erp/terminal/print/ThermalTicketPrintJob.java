@@ -88,7 +88,7 @@ public class ThermalTicketPrintJob implements PrintJob {
             ps.feed(1);
             ps.write(imageWrapper, escposImage);
             ps.feed(2);
-            ps.writeLF(titleStyle, config.getBussinesName().toUpperCase());
+            ps.writeLF(titleStyle, config.getBusinessName().toUpperCase());
             ps.writeLF(titleStyle, config.getTaxSegment().toUpperCase());
             Arrays.asList(config.getAddress().split("@@")).forEach(line -> {
                 try {
@@ -157,7 +157,7 @@ public class ThermalTicketPrintJob implements PrintJob {
             if (q.compareTo(BigDecimal.ZERO) >= 1) {
                 String qs = NumberToLetterHelper.convertNumberToLetter(q.toString());
                 ps.feed(1);
-                ps.write("POR ESTE PAGARE PROMETO(EMOS) INCONDICIONALMENTE PAGAR EN " + this.config.getAddress().replace("##", "").toUpperCase() + "  A LA ORDEN DE " + this.config.getBussinesName().replace("##", "").toUpperCase() + ",");
+                ps.write("POR ESTE PAGARE PROMETO(EMOS) INCONDICIONALMENTE PAGAR EN " + this.config.getAddress().replace("##", "").toUpperCase() + "  A LA ORDEN DE " + this.config.getBusinessName().replace("##", "").toUpperCase() + ",");
                 ps.write("LA CANTIDAD DE $ " + currencyFormat.format(q.setScale(0, RoundingMode.HALF_UP)) + "(" + qs + "), LA SUMA ANTES MENCIONADA SE CUBRIRA EL DIA " + saleDate + ", LA FALTA PUNTUAL DE PAGO QUE AMPARA ESTE DOCUMENTO, ");
                 ps.writeLF("CAUSARA INTERESES MORATORIOS A RAZON DEL 8% MENSUAL PAGADERO JUNTAMENTE CON EL PRINCIPAL QUE SE CONMUTARA SOBRE SALDOS INSOLUTOS");
                 ps.feed(3);

@@ -6,10 +6,7 @@ import { IProductType } from 'src/app/interfaces/product-type';
 import { IProductView } from 'src/app/interfaces/view/product-view';
 import { CatalogsService } from 'src/app/services/catalogs.service';
 import { ProductService } from 'src/app/services/product.service';
-import { constants, environment } from 'src/environments/environment';
-import { Message } from '@stomp/stompjs';
-import { Subscription } from 'rxjs';
-import { RxStompService } from '@stomp/ng2-stompjs';
+import { constants } from 'src/environments/environment';
 import { IProduct } from 'src/app/interfaces/product';
 import { ISaleType } from 'src/app/interfaces/sale-type';
 import { ISaleOrder } from 'src/app/interfaces/sale-order';
@@ -26,6 +23,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ProductEditComponent } from '../../common/ui/product-edit/product-edit.component';
 import { OrderFinderComponent } from '../order-finder/order-finder.component';
 import { IUser } from 'src/app/interfaces/user';
+import { CommunicatorService } from 'src/app/services/communicator.service';
 
 @Component({
   selector: 'app-point-of-sale',
@@ -109,9 +107,8 @@ export class PointOfSaleComponent implements OnInit {
 
   user: IUser;
 
-  constructor(private productService: ProductService, private catalogService: CatalogsService,
-    private rxStompService: RxStompService, private changeDetectorRefs: ChangeDetectorRef,
-    private dialog: MatDialog, private sessionStorage: SessionStorageService, private orderService: OrderService,
+  constructor(private productService: ProductService, private catalogService: CatalogsService, private changeDetectorRefs: ChangeDetectorRef,
+    private dialog: MatDialog, private sessionStorage: SessionStorageService, private orderService: OrderService, private communicatorService: CommunicatorService,
     private confirmationDialog: ConfirmationDialogService, private keyboardService: KeyboardService, private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
@@ -121,13 +118,8 @@ export class PointOfSaleComponent implements OnInit {
     this.catalogService.getProductTypes().subscribe(productTypes => this.productTypes = productTypes);
     this.catalogService.getSaleTypes().subscribe(saleTypes => this.saleTypes = saleTypes);
 
-    let subscription: Subscription = this.rxStompService.watch(environment.websocket.topicPrefix).subscribe((message: Message) => {
-      if (this.scale) {
-        const response = JSON.parse(message.body);
-        if (!response.code) {
-          this.quantity = response.value;
-        }
-      }
+    this.communicatorService.onMessage().subscribe(data => {
+      if (this.scale) this.quantity = data;
     });
   }
 

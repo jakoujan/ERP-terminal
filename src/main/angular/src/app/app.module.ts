@@ -14,8 +14,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from './components/common/ui/confirmation-dialog/confirmation-dialog.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { InjectableRxStompConfig, RxStompService, rxStompServiceFactory } from '@stomp/ng2-stompjs';
-import { stompConfig } from 'src/environments/environment';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -34,6 +33,7 @@ import { stompConfig } from 'src/environments/environment';
     MatButtonModule,
     MatDialogModule,
     MatCardModule,
+    MatIconModule,
 
   ],
   providers: [
@@ -41,16 +41,7 @@ import { stompConfig } from 'src/environments/environment';
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
       multi: true
-    },
-    {
-      provide: InjectableRxStompConfig,
-      useValue: stompConfig
-    },
-    {
-      provide: RxStompService,
-      useFactory: rxStompServiceFactory,
-      deps: [InjectableRxStompConfig]
-    },
+    }
   ],
   bootstrap: [AppComponent]
 })

@@ -8,8 +8,9 @@ import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { ConfigurationComponent } from 'src/app/components/modules/configuration/configuration.component';
 import { Session } from 'src/app/interfaces/session';
+import { CommunicatorService } from 'src/app/services/communicator.service';
 import { KeyboardService } from 'src/app/services/keyboard.service';
-import { constants, environment } from 'src/environments/environment';
+import { constants } from 'src/environments/environment';
 
 @Component({
   selector: 'app-main-navigation',
@@ -17,6 +18,7 @@ import { constants, environment } from 'src/environments/environment';
   styleUrls: ['./main-navigation.component.scss']
 })
 export class MainNavigationComponent implements OnInit {
+
 
   @SessionStorage(constants.SESSION)
   session: Session;
@@ -26,16 +28,16 @@ export class MainNavigationComponent implements OnInit {
   drawer: MatSidenav;
 
   shk: boolean = false;
-  appName: string = environment.APP_NAME;
+  appName: string = "";
   screen = 'fullscreen';
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(map(result => result.matches), shareReplay());
 
   constructor(private breakpointObserver: BreakpointObserver, private router: Router,
-    private keyboardService: KeyboardService, private dialog: MatDialog) { }
+    private keyboardService: KeyboardService, private dialog: MatDialog, private communicatorService: CommunicatorService) { }
 
   ngOnInit(): void {
-    this.appName = environment.APP_NAME;
+    this.appName = "";
   }
 
   public toggleFullScreen() {
@@ -71,6 +73,12 @@ export class MainNavigationComponent implements OnInit {
       data: {
 
       }
+    });
+  }
+
+  showCommunicatorSelector() {
+    this.communicatorService.status().subscribe((status) => {
+      console.log(status);
     });
   }
 
