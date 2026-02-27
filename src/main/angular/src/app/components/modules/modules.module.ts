@@ -33,6 +33,7 @@ import { ModulesRoutingModule } from './modules-routing.module';
 import { UIModule } from '../common/ui/ui.module';
 import { ConfigurationComponent } from './configuration/configuration.component';
 import { OrderFinderComponent } from './order-finder/order-finder.component';
+import { CommunicatorSelectorComponent } from './communicator-selector/communicator-selector.component';
 
 
 
@@ -40,7 +41,8 @@ import { OrderFinderComponent } from './order-finder/order-finder.component';
   declarations: [
     PointOfSaleComponent,
     ConfigurationComponent,
-    OrderFinderComponent
+    OrderFinderComponent,
+    CommunicatorSelectorComponent
   ],
   imports: [
     CommonModule,

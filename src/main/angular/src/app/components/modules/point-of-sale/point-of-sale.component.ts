@@ -385,8 +385,6 @@ export class PointOfSaleComponent implements OnInit {
   }
 
   save() {
-
-
     this.order.customer = this.customer;
     this.order.taxes = this.qtax;
     this.order.total = this.total;

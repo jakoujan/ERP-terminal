@@ -1,0 +1,23 @@
+<h2 mat-dialog-title>Selección de puerto de comunicación</h2>
+<div mat-dialog-content class="dialog-content">
+    <form [formGroup]="form">
+        <div class="row">
+            <div class="col">
+                <mat-form-field class="input-full-width" appearance="fill">
+                    <mat-label>Puerto</mat-label>
+                    <mat-select matNativeControl formControlName="port" placeholder="Puerto" required>
+                        <mat-option *ngFor="let port of ports" [value]="port">{{ port }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error>
+                        <custom-mat-error [control]="form.controls.port"></custom-mat-error>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+    </form>
+</div>
+<div mat-dialog-actions align="end">
+    <button mat-flat-button color="primary" [disabled]="form.invalid" (click)="connect()">Conectar</button>
+    <button mat-button [mat-dialog-close]="false">Cerrar</button>
+</div>

@@ -6,18 +6,23 @@ import { Observable, Subject } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class CommunicatorService implements OnInit {
+export class CommunicatorService {
 
   private subject = new Subject<number>();
   private webSocket: WebSocket;
 
   constructor(private http: HttpClient) {
   }
-  ngOnInit(): void {
-  }
+
 
   public status(): Observable<ICommunicatorStatus> {
     return this.http.get<ICommunicatorStatus>(`/pos/communicator`);
+  }
+
+  public disconnect() {
+    if (this.webSocket && this.webSocket.readyState === WebSocket.OPEN) {
+      this.webSocket.close();
+    }
   }
 
   public onMessage(name?: string): Observable<number> {
@@ -30,7 +35,7 @@ export class CommunicatorService implements OnInit {
     }
     this.webSocket = new WebSocket(endpoint);
     this.webSocket.onmessage = (message) => {
-      this.subject.next(JSON.parse(message.data));
+      this.subject.next(message.data);
     };
     return this.subject.asObservable();
   }

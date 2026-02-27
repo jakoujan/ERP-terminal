@@ -15,11 +15,16 @@ import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -44,36 +49,49 @@ public class ConnectorWebSocketHandler extends TextWebSocketHandler {
     Integer port;
     @Value("${port.type:serial}")
     String type;
+    @Value("${read.start:1}")
+    Integer start;
+    @Value("${read.end:7}")
+    Integer end;
 
     private Communicator portCommunicator;
     private String last = "";
     ScheduledExecutorService scheduler =
             Executors.newSingleThreadScheduledExecutor();
+    ScheduledFuture<?> future;
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         try {
-            var portConfig = new PortConfiguration(name, baudrate, PortData.findParity(parity), databits, PortData.findStopBits(stopbit));
+            var portConfig = new PortConfiguration(getName(session).isEmpty() ? name : getName(session).get(),
+                    baudrate, PortData.findParity(parity), databits, PortData.findStopBits(stopbit));
             if (type.equals("serial")) {
-                this.portCommunicator = new SerialCommunicator(portConfig, (line) -> {
-                    var data = line.replaceAll(PATTERN, "").trim();
+                this.portCommunicator = new SerialCommunicator(portConfig, line -> {
+                    var data = line.substring(start, end).trim();
                     log.info("line Serial: [{}]", line);
+                    log.info("procesed: [{}]", data);
                     if (!data.equals(last)) {
-                        last = data;
-                        Read read = new Read();
-                        read.setValue(new BigDecimal(data));
-                        log.info("read Serial: [{}]", read.getValue().toString());
-                        TextMessage message = new TextMessage(read.toString());
                         try {
+                            last = data;
+                            Read read = new Read();
+                            read.setValue(new BigDecimal(data));
+                            log.info("read Serial: [{}]", read.getValue().toString());
+                            TextMessage message = new TextMessage(read.getValue().toString());
                             session.sendMessage(message);
-                        } catch (IOException e) {
-                            log.error("Error al enviar mesaje WS", e);
+                        } catch (IOException | NumberFormatException e) {
+                            log.error("Error al enviar mensaje WS", e);
+                            TextMessage message = new TextMessage("ERR.");
+                            try {
+                                session.sendMessage(message);
+                            } catch (IOException ex) {
+                                log.error("Error al enviar mensaje WS", e);
+                            }
                         }
                     }
                 });
             } else {
                 this.portCommunicator = EthernetCommunicator.builder().host(host).port(port).action((line) -> {
-                    var data = line.replaceAll(PATTERN, "").trim();
+                    var data = line.substring(1, 7);
                     log.info("line: [{}]", line);
                     if (!data.equals(last)) {
                         last = data;
@@ -96,19 +114,23 @@ public class ConnectorWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
+    private void action(String data, WebSocketSession session) {
+
+    }
+
+    private Optional<String> getName(WebSocketSession session) {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUri(Objects.requireNonNull(session.getUri()));
+        Map<String, String> queryParams = builder.build().getQueryParams().toSingleValueMap();
+        var name = queryParams.get("name");
+        return name == null || name.isEmpty() ? Optional.empty() : Optional.of(name);
+    }
+
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         log.info("Stopping communication...");
-
-        scheduler.shutdownNow(); // interrumpe el sleep
-        try {
-            if (!scheduler.awaitTermination(2, TimeUnit.SECONDS)) {
-                log.warn("No se pudo detener el hilo a tiempo");
-            }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-        this.portCommunicator.disconnect();
+        if (future != null)
+            future.cancel(true);
+        if (this.portCommunicator != null) this.portCommunicator.disconnect();
     }
 
     public void startCommunication() {
@@ -116,10 +138,15 @@ public class ConnectorWebSocketHandler extends TextWebSocketHandler {
             log.warn("Puerto no conectado");
             return;
         }
-        scheduler.scheduleAtFixedRate(() -> {
+        future = scheduler.scheduleAtFixedRate(() -> {
             try {
-                portCommunicator.write("P");
-            } catch (SerialPortException e) {
+                if (this.portCommunicator == null || !this.portCommunicator.isConnected()) {
+                    log.warn("Puerto no conectado");
+                    return;
+                }
+                byte[] buffer = {80};
+                portCommunicator.write(buffer);
+            } catch (SerialPortException | IOException e) {
                 log.error("Error al enviar", e);
             }
         }, 0, 500, TimeUnit.MILLISECONDS);

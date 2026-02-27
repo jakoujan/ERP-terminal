@@ -7,6 +7,7 @@ import { SessionStorage } from 'ngx-webstorage';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { ConfigurationComponent } from 'src/app/components/modules/configuration/configuration.component';
+import { CommunicatorSelectorComponent } from 'src/app/components/modules/communicator-selector/communicator-selector.component';
 import { Session } from 'src/app/interfaces/session';
 import { CommunicatorService } from 'src/app/services/communicator.service';
 import { KeyboardService } from 'src/app/services/keyboard.service';
@@ -77,8 +78,15 @@ export class MainNavigationComponent implements OnInit {
   }
 
   showCommunicatorSelector() {
+
     this.communicatorService.status().subscribe((status) => {
-      console.log(status);
+      this.dialog.open(CommunicatorSelectorComponent, {
+        width: '480px',
+        disableClose: true,
+        data: {
+          ports: status.ports
+        }
+      });
     });
   }
 

@@ -24,7 +24,7 @@ public class TicketConfig {
     private String printer;
     @Value("${ticket.logo}")
     private String logoPath;
-    @Value("${ticket.business.name}")
+    @Value("${ticket.business.name: }")
     private String businessName;
     @Value("${ticket.address}")
     private String address;
@@ -38,9 +38,9 @@ public class TicketConfig {
     private Boolean showTermsOfSale;
     @Value("${ticket.terms.sale}")
     private String termsOfSale;
-    @Value("${ticket.footer}")
+    @Value("${ticket.footer:}")
     private String footer;
-    @Value("${ticket.slogan}")
+    @Value("${ticket.slogan:}")
     private String slogan;
 
 }

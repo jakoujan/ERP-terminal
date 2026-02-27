@@ -32,6 +32,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import javax.imageio.ImageIO;
 import javax.print.PrintService;
+
+import com.mcss.erp.terminal.data.entity.SaleType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -154,7 +156,7 @@ public class ThermalTicketPrintJob implements PrintJob {
             ps.writeLF("(" + convertNumberToLetter + ")");
             ps.feed(1);
             BigDecimal q = order.getTotal().setScale(0, RoundingMode.HALF_UP);
-            if (q.compareTo(BigDecimal.ZERO) >= 1) {
+            if (q.compareTo(BigDecimal.ZERO) >= 1 && order.getSaleType().getId().equals(2)) {
                 String qs = NumberToLetterHelper.convertNumberToLetter(q.toString());
                 ps.feed(1);
                 ps.write("POR ESTE PAGARE PROMETO(EMOS) INCONDICIONALMENTE PAGAR EN " + this.config.getAddress().replace("##", "").toUpperCase() + "  A LA ORDEN DE " + this.config.getBusinessName().replace("##", "").toUpperCase() + ",");
@@ -164,7 +166,7 @@ public class ThermalTicketPrintJob implements PrintJob {
                 ps.writeLF(subtitleStyle, "__________________________________");
                 ps.writeLF(subtitleStyle, "NOMBRE Y FIRMA DE ACEPTACION");
             }
-            ps.feed(3);
+            ps.feed(1);
             Arrays.asList(config.getFooter().split("##")).forEach(line -> {
                 try {
                     ps.writeLF(subtitleStyle, line.toUpperCase());
@@ -172,7 +174,6 @@ public class ThermalTicketPrintJob implements PrintJob {
 
                 }
             });
-            ps.feed(2);
             //ps.writeLF(subtitleStyle, "ESTE NO ES UN COMPROBANTE DE PAGO");
             //ps.feed(2);
 
