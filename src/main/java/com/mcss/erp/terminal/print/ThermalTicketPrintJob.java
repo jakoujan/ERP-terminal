@@ -9,17 +9,17 @@ import com.github.anastaciocintra.escpos.EscPos;
 import com.github.anastaciocintra.escpos.EscPosConst;
 import com.github.anastaciocintra.escpos.Style;
 import com.github.anastaciocintra.escpos.barcode.BarCode;
-import com.github.anastaciocintra.escpos.image.BitImageWrapper;
-import com.github.anastaciocintra.escpos.image.Bitonal;
-import com.github.anastaciocintra.escpos.image.BitonalOrderedDither;
-import com.github.anastaciocintra.escpos.image.CoffeeImageImpl;
-import com.github.anastaciocintra.escpos.image.EscPosImage;
+import com.github.anastaciocintra.escpos.image.*;
 import com.github.anastaciocintra.output.PrinterOutputStream;
 import com.ispc.slibrary.helper.NumberToLetterHelper;
 import com.mcss.erp.terminal.configuration.TicketConfig;
 import com.mcss.erp.terminal.data.entity.ProductOrder;
 import com.mcss.erp.terminal.data.entity.SaleOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.imageio.ImageIO;
+import javax.print.PrintService;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,11 +31,6 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Iterator;
-import javax.imageio.ImageIO;
-import javax.print.PrintService;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -109,13 +104,19 @@ public class ThermalTicketPrintJob implements PrintJob {
                     }
                 });
             }
-            ps.feed(1);
-            ps.write(subtitleStyle, "Telefono(s): ");
-            ps.writeLF(subtitleStyle, config.getPhone());
-            ps.write(subtitleStyle, "Whatsapp: ");
-            ps.writeLF(subtitleStyle, config.getWhatsapp());
-            ps.feed(1);
-            ps.writeLF(subtitleStyle, config.getSlogan().toUpperCase());
+            if (!config.getPhone().isEmpty()) {
+                ps.feed(1);
+                ps.write(subtitleStyle, "Telefono(s): ");
+                ps.writeLF(subtitleStyle, config.getPhone());
+            }
+            if (!config.getWhatsapp().isEmpty()) {
+                ps.write(subtitleStyle, "Whatsapp: ");
+                ps.writeLF(subtitleStyle, config.getWhatsapp());
+            }
+            if (!config.getSlogan().isEmpty()) {
+                ps.feed(1);
+                ps.writeLF(subtitleStyle, config.getSlogan().toUpperCase());
+            }
             ps.writeLF("------------------------------------------------");
             //ps.writeLF(titleStyle, "Orden de venta");
             ps.feed(1);
@@ -132,7 +133,7 @@ public class ThermalTicketPrintJob implements PrintJob {
 
             ps.feed(1);
             ps.writeLF("CONCEPTO");
-            ps.writeLF("CANTIDAD   PIEZAS     IMPORTE      TOTAL");
+            ps.writeLF("CANTIDAD     IMPORTE      TOTAL");
             ps.writeLF("------------------------------------------------");
 
             Iterator<ProductOrder> pits = order.getProducts().iterator();
@@ -141,8 +142,7 @@ public class ThermalTicketPrintJob implements PrintJob {
                 ProductOrder p = pits.next();
                 kilos = kilos.add(p.getQuantity());
                 ps.writeLF(labelStyle, p.getProduct().getLongDescription());
-                ps.write(fixedLengthString(p.getQuantity().toString(), 10));
-                ps.write(fixedLengthString(p.getPieces() != null ? p.getPieces().toString() : "", 10));
+                ps.write(fixedLengthString(p.getQuantity().toString(), 12));
                 ps.write(fixedLengthString("$" + currencyFormat.format(p.getPrice()), 12));
                 ps.writeLF(fixedLengthString("$" + currencyFormat.format(p.getAmount().setScale(2, RoundingMode.HALF_UP)), 12));
                 ps.writeLF("················································");
@@ -160,7 +160,7 @@ public class ThermalTicketPrintJob implements PrintJob {
             ps.writeLF("(" + convertNumberToLetter + ")");
             ps.feed(1);
             BigDecimal q = order.getTotal().setScale(0, RoundingMode.HALF_UP);
-            if (q.compareTo(BigDecimal.ZERO) >= 1) {
+            /*if (q.compareTo(BigDecimal.ZERO) >= 1) {
                 String qs = NumberToLetterHelper.convertNumberToLetter(q.toString());
                 ps.feed(1);
                 ps.write("POR ESTE PAGARE PROMETO(EMOS) INCONDICIONALMENTE PAGAR EN " + this.config.getAddress().replace("##", "").toUpperCase() + "  A LA ORDEN DE " + this.config.getBussinesName().replace("##", "").toUpperCase() + ",");
@@ -170,18 +170,19 @@ public class ThermalTicketPrintJob implements PrintJob {
                 ps.writeLF(subtitleStyle, "__________________________________");
                 ps.writeLF(subtitleStyle, "NOMBRE Y FIRMA DE ACEPTACION");
             }
-            ps.feed(3);
-            Arrays.asList(config.getFooter().split("##")).forEach(line -> {
-                try {
-                    ps.writeLF(subtitleStyle, line.toUpperCase());
-                } catch (IOException ex) {
+            ps.feed(3);*/
+            if(config.getFooter() != null && !config.getFooter().isEmpty()) {
+                Arrays.asList(config.getFooter().split("##")).forEach(line -> {
+                    try {
+                        ps.writeLF(subtitleStyle, line.toUpperCase());
+                    } catch (IOException ex) {
 
-                }
-            });
-            ps.feed(2);
+                    }
+                });
+                ps.feed(1);
+            }
             //ps.writeLF(subtitleStyle, "ESTE NO ES UN COMPROBANTE DE PAGO");
             //ps.feed(2);
-
             BarCode barcode = new BarCode()
                     .setBarCodeSize(4, 120)
                     .setJustification(EscPosConst.Justification.Center);
