@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
 import { SessionStorageService } from 'ngx-webstorage';
 import { Observable } from 'rxjs';
 import { constants } from 'src/environments/environment';
@@ -10,7 +10,7 @@ import { SecurityService } from '../services/security.service';
 @Injectable({
   providedIn: 'root'
 })
-export class SessionGuard implements CanActivate {
+export class SessionGuard  {
 
   constructor(private router: Router, private securityService: SecurityService, private sessionStorage: SessionStorageService) {
 
