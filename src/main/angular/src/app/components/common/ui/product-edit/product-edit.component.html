@@ -33,6 +33,6 @@
   </div>
 </div>
 <div mat-dialog-actions align="end">
-  <button mat-button [mat-dialog-close]="false">Cancelar</button>
-  <button mat-flat-button  color="accent" cdkFocusInitial (click)="edit()">Editar</button>
+  <button mat-button (click)="close()">Cancelar</button>
+  <button mat-flat-button  color="accent" [disabled]="disable" cdkFocusInitial (click)="edit()">Editar</button>
 </div>

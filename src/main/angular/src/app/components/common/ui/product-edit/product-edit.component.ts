@@ -25,6 +25,7 @@ export class ProductEditComponent implements OnInit {
   correctQuantity: boolean = false;
   correctPieces: boolean = false;
   productOrder: IProductOrder;
+  disable: boolean = true;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData, private keyboardService: KeyboardService,
     private snackBar: MatSnackBar, private dialogRef: MatDialogRef<ProductEditComponent>, private confirmationDialog: ConfirmationDialogService) { }
@@ -42,15 +43,28 @@ export class ProductEditComponent implements OnInit {
   }
 
   public edit() {
-    this.productOrder.price = this.price;
-    this.productOrder.quantity = this.quantity;
-    this.productOrder.pieces = this.pieces;
-    this.productOrder.amount = this.price * this.quantity;
-    this.dialogRef.close(this.productOrder);
+    const lowerPrice = this.product.price - this.product.maxDiscount;
+    const maxPrice = this.product.price + this.product.maxDiscount;
+    if (this.price >= lowerPrice && this.price <= maxPrice) {
+      this.productOrder.price = this.price;
+      this.productOrder.quantity = this.quantity;
+      this.productOrder.pieces = this.pieces;
+      this.productOrder.amount = this.price * this.quantity;
+      this.dialogRef.close(this.productOrder);
+    } else {
+      this.confirmationDialog.showConfirmationDialog('<p>El precio indicado es incorrecto</p> <p>Precio menor permitido: ' + lowerPrice + '</p>' +
+        '<p>Precio mayor permitido: ' + maxPrice + '</p>', '450px', 'Aceptar');
+    }
+  }
+
+  public close() {
+    if (this.keyboard) { this.keyboardService.change(false); }
+    this.dialogRef.close();
   }
 
   changeQuantity() {
     if (this.product) {
+      this.disable = true;
       this.keyboard = new Keyboard({
         onChange: input => this.onChangeQuantity(input),
         onKeyPress: button => this.onKeyPress(button),
@@ -63,6 +77,7 @@ export class ProductEditComponent implements OnInit {
       this.keyboardService.change(true, true);
       const subs = this.keyboardService.$controller.subscribe(parameters => {
         subs.unsubscribe();
+        this.disable = false;
         if (!parameters.show && !this.correctQuantity) {
 
         }
@@ -76,6 +91,7 @@ export class ProductEditComponent implements OnInit {
 
   changePieces() {
     if (this.product) {
+      this.disable = true;
       this.keyboard = new Keyboard({
         onChange: input => this.onChangePieces(input),
         onKeyPress: button => this.onKeyPress(button),
@@ -88,6 +104,7 @@ export class ProductEditComponent implements OnInit {
       this.keyboardService.change(true, true);
       const subs = this.keyboardService.$controller.subscribe(parameters => {
         subs.unsubscribe();
+        this.disable = false;
         if (!parameters.show && !this.correctQuantity) {
 
         }
@@ -160,6 +177,7 @@ export class ProductEditComponent implements OnInit {
 
   changePrice() {
     if (this.product) {
+      this.price = this.productOrder.price;
       this.keyboard = new Keyboard({
         onChange: input => this.onChange(input),
         onKeyPress: button => this.onKeyPress(button),
@@ -172,12 +190,9 @@ export class ProductEditComponent implements OnInit {
       this.keyboardService.change(true, true);
       const subs = this.keyboardService.$controller.subscribe(parameters => {
         subs.unsubscribe();
-        if (!parameters.show && !this.correctPrice) {
-          const lowerPrice = this.product.price - this.product.maxDiscount;
-          const maxPrice = this.product.price + this.product.maxDiscount;
+        this.disable = false;
+        if (!parameters.show && !this.correctPrice && this.product.price != this.price) {
           this.keyboard.setInput(this.product.price.toString());
-          this.confirmationDialog.showConfirmationDialog('<p>El precio indicado es incorrecto</p> <p>Precio menor permitido: ' + lowerPrice + '</p>' +
-            '<p>Precio mayor permitido: ' + maxPrice + '</p>', '450px', 'Aceptar');
         }
       })
     } else {

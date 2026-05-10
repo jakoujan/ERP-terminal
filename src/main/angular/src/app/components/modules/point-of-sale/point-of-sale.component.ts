@@ -33,7 +33,7 @@ import { CommunicatorService } from 'src/app/services/communicator.service';
 export class PointOfSaleComponent implements OnInit {
 
   keyboard: Keyboard;
-  displayedColumns = ['shortDescription', 'pieces', 'quantity', 'amount', 'actions'];
+  displayedColumns = ['shortDescription', 'pieces', 'quantity', 'price', 'amount', 'actions'];
   quantity: number = 0;
   price: number = 0;
   pieces: number = 0;
@@ -373,7 +373,7 @@ export class PointOfSaleComponent implements OnInit {
   }
 
   readyToPay(): boolean {
-    return this.order.products.length === 0 || !this.customer || !this.saleType;
+    return this.order.products.length === 0 || !this.customer || !this.saleType || this.order.products.some(p => !p.price || p.price === 0 || !p.quantity || p.quantity === 0);
   }
 
   cancelOrder() {
