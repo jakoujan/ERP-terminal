@@ -25,20 +25,15 @@ export class MainNavigationComponent implements OnInit {
   session: Session;
 
 
-  @ViewChild('drawer')
-  drawer: MatSidenav;
-
   shk: boolean = false;
-  appName: string = "";
+  appName: string = "MAVACARR";
   screen = 'fullscreen';
-  isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
-    .pipe(map(result => result.matches), shareReplay());
 
-  constructor(private breakpointObserver: BreakpointObserver, private router: Router,
+  constructor(private router: Router,
     private keyboardService: KeyboardService, private dialog: MatDialog, private communicatorService: CommunicatorService) { }
 
   ngOnInit(): void {
-    this.appName = "";
+    this.appName = "MAVACARR";
   }
 
   public toggleFullScreen() {
@@ -78,7 +73,6 @@ export class MainNavigationComponent implements OnInit {
   }
 
   showCommunicatorSelector() {
-
     this.communicatorService.status().subscribe((status) => {
       this.dialog.open(CommunicatorSelectorComponent, {
         width: '480px',

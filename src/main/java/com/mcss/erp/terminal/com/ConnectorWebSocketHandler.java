@@ -90,9 +90,8 @@ public class ConnectorWebSocketHandler extends TextWebSocketHandler {
                     }
                 });
             } else {
-                this.portCommunicator = EthernetCommunicator.builder().host(host).port(port).action((line) -> {
-                    var data =line; // line.substring(start, end).trim();
-                    log.info("line: [{}]", line);
+                this.portCommunicator = EthernetCommunicator.builder().host(host).port(port).action((data) -> {
+                    log.info("line: [{}]", data);
                     if (!data.equals(last)) {
                         last = data;
                         Read read = new Read();
